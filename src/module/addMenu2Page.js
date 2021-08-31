@@ -1,12 +1,12 @@
 // 接收一个html字页面符串--给标题注入id-->得到tree菜单结构---》生成菜单模板--》注入到页面内容
 import cheerio from "cheerio";
-import zl_ver_menu from "zl_ver_menu";
+import zl_ver_menu from "zl-ver-menu";
 import addHsId from "./addHsId";
 import addHtmlTag from "./addHtmlTag";
 import createEndMenuTempla from "./createEndMenuTempla";
 import resolveHtmlPageMenu from "./resolveHtmlPageMenu";
 
-function addMenu2Page(html) {
+function addMenu2Page(html,fileName) {
     // 使用cheerio模块向页面中的所有标题注入id
     const $ = cheerio.load(html);
     html = addHsId($);

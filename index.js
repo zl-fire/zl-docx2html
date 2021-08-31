@@ -1,13 +1,124 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('mammoth'), require('zl_nodefs')) :
-    typeof define === 'function' && define.amd ? define(['mammoth', 'zl_nodefs'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.mammoth, global.zl_nodefs));
-}(this, (function (mammoth, zl_nodefs) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('cheerio'), require('zl-ver-menu')) :
+    typeof define === 'function' && define.amd ? define(['cheerio', 'zl-ver-menu'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['zl-createhnmenu'] = factory(global.cheerio, global.zl_ver_menu));
+}(this, (function (cheerio, zl_ver_menu) { 'use strict';
 
     function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-    var mammoth__default = /*#__PURE__*/_interopDefaultLegacy(mammoth);
-    var zl_nodefs__default = /*#__PURE__*/_interopDefaultLegacy(zl_nodefs);
+    var cheerio__default = /*#__PURE__*/_interopDefaultLegacy(cheerio);
+    var zl_ver_menu__default = /*#__PURE__*/_interopDefaultLegacy(zl_ver_menu);
+
+    // 给页面的所有标题元素添加id属性，用于后面的锚点跳转
+    function addHsId($) {
+        let hs = $("h1,h2,h3,h4,h5,h6");
+        for (let i = 0; i < hs.length; i++) {
+            let tagName;
+            try {
+                windows;
+                tagName = hs[i].tagName;
+            }
+            catch {
+                tagName = hs[i].name;
+            }
+            let eleId = $(hs[i]).prop("id");
+            // console.log("===hs[i]====", tagName, eleId)
+            //向元素注入id
+            if (!eleId) $(hs[i]).prop("id", tagName + i);
+        }
+        return $.html();
+    }
+
+    // 如果内容没有外层的html，body包裹，则可使用此函数进行处理
+    function addHtmlTag(content, fileName) {
+        return `
+    <!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${fileName}</title>
+    <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
+</head>
+<body>
+    ${content}
+</body>
+</html>
+    `;
+    }
+
+    // 返回要创建固定定位的菜单容器字符串，包含了html+css+js, 接收一个具体的菜单内容作为参数
+    function createEndMenuTempla(realMenu) {
+        //设置相关样式
+        var anchorLinkDivStyle = `
+<style>
+#anchorLinkMenu{
+     color:blue;
+     position:fixed;
+     top:5px;
+     right: 10px;
+     padding:10px;
+     border-radius:5px;
+     box-shadow: 1px 1px 5px;
+     cursor: pointer;
+     opacity: 0.4;
+    }
+ #anchorLinkMenu:hover{
+    opacity: 1;
+}
+#anchorLinkContent {
+    opacity: 1;
+    padding: 5px;
+   /* width: 400px; */
+    position: fixed;
+    box-shadow: 1px 1px 5px;
+    border-radius: 10px 0 0 10px;
+    top:5px;
+    right: -410px;
+    background-color: white;
+    height:97vh;
+    /*  overflow: scroll;*/
+    transition: all 0.5s;
+
+}
+</style>
+  `;
+        //先往body的最后面添加两个div，分别表示菜单按钮和菜单内容
+        var anchorLinkDiv = '<div id="anchorLinkMenu">目录菜单</div><div id="anchorLinkContent">666</div>';
+        return anchorLinkDivStyle + `
+    <script>
+    createRightMenu();
+    function createRightMenu() {
+        //插入div和相关样式
+        document.querySelector("body").innerHTML += '${anchorLinkDiv}';
+        //绑定div按钮的点击事件
+        var anchorLinkMene = document.querySelector("#anchorLinkMenu");
+        var anchorLinkContent = document.querySelector("#anchorLinkContent");
+
+        //给div菜单内容添加实际内容
+        // var realMenu = document.querySelector("#" + realMenuId);
+        // anchorLinkContent.appendChild(realMenu.cloneNode(true));
+        $(anchorLinkContent).html(\`${realMenu}\`);
+    
+        // anchorLinkMene.onclick = function () {
+        //     anchorLinkContent.style.cssText = "right:0;";
+        // };
+        // //当点击了具体的内容菜单后，隐藏此菜单
+        // anchorLinkContent.onclick = function () {
+        //     anchorLinkContent.style.cssText = "right:-410px;";
+        // };
+
+        anchorLinkMene.onmouseenter = function () {
+            anchorLinkContent.style.cssText = "right:0;"
+        }
+        anchorLinkContent.onmouseleave = function () {
+            anchorLinkContent.style.cssText = "right:-410px;"
+        }
+    }
+    </script>
+    `;
+    }
 
     // 传入能获取所有页面元素的￥对象，从中获取由h1---h6组合成的树结构
     function resolveHtmlPageMenu($) {
@@ -105,34 +216,62 @@
         return list;
     }
 
-    // console.log( path.resolve("."))
-    let {
-        writeFile, //创建/写入文件
-        deleteFile,//删除文件夹/文件
-        readFileList,//读取目录树tree
-        readFileContent,//读取文件内容
-        addFileContent //追加文件内容
-    } = zl_nodefs__default['default'];
+    // 接收一个html字页面符串--给标题注入id-->得到tree菜单结构---》生成菜单模板--》注入到页面内容
+
+    function addMenu2Page(html,fileName) {
+        // 使用cheerio模块向页面中的所有标题注入id
+        const $ = cheerio__default['default'].load(html);
+        html = addHsId($);
+        // 得到菜单json对象
+        let menuJson = resolveHtmlPageMenu($);
+        // 得到构建的菜单相关模板
+        let { styleStr, templateStr, jsStr } = zl_ver_menu__default['default']({
+            show: false, data: menuJson,
+            callback: function (par) {
+                location.hash = $(par).attr("data-id");
+            },
+            width: "300px"
+        });
+        // 根据模板构建真正的菜单
+        let realMenu = createEndMenuTempla(templateStr);
+        // 然后向他包裹html标签
+        html = addHtmlTag(styleStr + realMenu + html + jsStr, fileName);
+        return html;
+    }
+
+    // import mammoth from "mammoth";
+    // import zl_nodefs from "zl_nodefs";
+    // import resolveHtmlPageMenu from "./module/resolveHtmlPageMenu";
+    // // console.log( path.resolve("."))
+    // let {
+    //     writeFile, //创建/写入文件
+    //     deleteFile,//删除文件夹/文件
+    //     readFileList,//读取目录树tree
+    //     readFileContent,//读取文件内容
+    //     addFileContent //追加文件内容
+    // } = zl_nodefs;
 
 
 
-    // let fileName="graphqlAPI.docx";
-    let fileName = "hell.docx";
-    // // let fileName = "测试文档.doc";
-    // console.log(path.resolve(".") + "\\" + fileName)
+    // // let fileName="graphqlAPI.docx";
+    // let fileName = "666.docx";
+    // // // let fileName = "测试文档.doc";
+    // // console.log(path.resolve(".") + "\\" + fileName)
 
-    // mammoth.convertToHtml({ path: path.resolve(".") + "\\" + fileName })  //文件路径需要给绝对的全路径(windows)
-    mammoth__default['default'].convertToHtml({ path: path.resolve(".") + "/" + fileName })  //文件路径需要给绝对的全路径 (mac)
-        .then(function (result) {
-            // 先拿到html字符串
-            var html = "<section>" + result.value + "</section>"; // The generated HTML
-            html = resolveHtmlPageMenu(html);
-            // html = JSON.stringify(html);
-            // var messages = result.messages; // Any messages, such as warnings during conversion
-            // console.log("messages========", messages)
+    // // mammoth.convertToHtml({ path: path.resolve(".") + "\\" + fileName })  //文件路径需要给绝对的全路径(windows)
+    // mammoth.convertToHtml({ path: path.resolve(".") + "/" + fileName })  //文件路径需要给绝对的全路径 (mac)
+    //     .then(function (result) {
+    //         // 先拿到html字符串
+    //         var html = "<section>" + result.value + "</section>"; // The generated HTML
+    //         html = resolveHtmlPageMenu(html);
+    //         // html = JSON.stringify(html);
+    //         // var messages = result.messages; // Any messages, such as warnings during conversion
+    //         // console.log("messages========", messages)
 
-            writeFile({ path: "./" + fileName.split(".")[0] + ".html", content: html, showExeResult: true });
-        })
-        .done();
+    //         writeFile({ path: "./" + fileName.split(".")[0] + ".html", content: html, showExeResult: true })
+    //     })
+    //     .done();
+
+    return addMenu2Page;
 
 })));

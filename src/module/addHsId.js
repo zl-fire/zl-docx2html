@@ -10,7 +10,7 @@ function addHsId($) {
         catch {
             tagName = hs[i].name;
         }
-        eleId = $(hs[i]).prop("id");
+        let eleId = $(hs[i]).prop("id");
         // console.log("===hs[i]====", tagName, eleId)
         //向元素注入id
         if (!eleId) $(hs[i]).prop("id", tagName + i);
