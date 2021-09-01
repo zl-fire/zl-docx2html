@@ -270,6 +270,7 @@
         * @param {Any} parObj.outPath 要输出的html文档路径，默认为当前docx文件所在目录
         * @param {Boolean} parObj.isAddHtmlHead  是否不给转换后的文档添加html,body等标签
         * @param {Boolean} parObj.isAddMenu   是否给转换后的html文件注入锚点菜单
+        * @param {Boolean} parObj.autoHsSty   是否添加手动注入的h1--h6的大小样式
         * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
         * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
         * @author zl-fire 2021/09/01
@@ -287,7 +288,8 @@
             isAddHtmlHead = true,
             isAddMenu = true,
             showWarnMessage = true,
-            showExeResult = true
+            showExeResult = true,
+            autoHsSty=true
         } = parObj;
         // 给输出路径添加默认值
         if (!outPath) outPath = docxPath.replace(extname, ".html");
@@ -297,8 +299,39 @@
         if (showWarnMessage) {
             console.log(basename + "转换警告提示:", messages);
         }
+        // 手动设置调整的标题样式
+        let styStr = `
+<style>
+    h1 {
+        font-size: 32px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    h3 {
+        font-size: 18.72px;
+    }
+
+    h4 {
+        font-size: 16px;
+    }
+
+    h5 {
+        font-size: 13.28px;
+    }
+
+    h6 {
+        font-size: 12px;
+    }
+</style>
+    `;
         // 先拿到html字符串
         let html = value;  // The generated HTML
+        if(autoHsSty){
+            html = value+styStr;
+        }
         html = "<section>" + html + "</section>"; // The generated HTML
         html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu });
 
