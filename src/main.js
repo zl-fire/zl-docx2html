@@ -1,42 +1,19 @@
+import addHtmlTag from "./module/addHtmlTag";
 import addMenu2Page from "./module/addMenu2Page";
+import createEndMenuTempla from "./module/createEndMenuTempla";
 import docx2htmlAddMenu from "./module/docx2htmlAddMenu";
+import numberToChinese from "./module/numberToChinese";
+import numToEng from "./module/numToEng";
+import resolveHtmlPageMenu from "./module/resolveHtmlPageMenu";
+let utils = {
+    addHtmlTag, //给html主体内容字符串包裹html,head,body标签
+    createEndMenuTempla,//返回要固定定位的菜单容器字符串
+    numberToChinese,//将阿拉伯数字转换成中文的大写数字
+    numToEng,//通过ASCII码的方式将1-26转换为字母a-z(可大写可小写)
+    resolveHtmlPageMenu,//传入能获取所有页面元素的$对象，从中获取由h1---h6组合成的树结构
+};
 export {
-    docx2htmlAddMenu,
-    addMenu2Page
+    addMenu2Page,  //如果已有html字符串 就可以调用这个函数
+    docx2htmlAddMenu, //如果要从docx文档转换为含有菜单的html页面 就可以调用这个函数
+    utils
 }
-
-// import mammoth from "mammoth";
-// import zl_nodefs from "zl_nodefs";
-// import resolveHtmlPageMenu from "./module/resolveHtmlPageMenu";
-// // console.log( path.resolve("."))
-// let {
-//     writeFile, //创建/写入文件
-//     deleteFile,//删除文件夹/文件
-//     readFileList,//读取目录树tree
-//     readFileContent,//读取文件内容
-//     addFileContent //追加文件内容
-// } = zl_nodefs;
-
-
-
-// // let fileName="graphqlAPI.docx";
-// let fileName = "666.docx";
-// // // let fileName = "测试文档.doc";
-// // console.log(path.resolve(".") + "\\" + fileName)
-
-// // mammoth.convertToHtml({ path: path.resolve(".") + "\\" + fileName })  //文件路径需要给绝对的全路径(windows)
-// mammoth.convertToHtml({ path: path.resolve(".") + "/" + fileName })  //文件路径需要给绝对的全路径 (mac)
-//     .then(function (result) {
-//         // 先拿到html字符串
-//         var html = "<section>" + result.value + "</section>"; // The generated HTML
-//         html = resolveHtmlPageMenu(html);
-//         // html = JSON.stringify(html);
-//         // var messages = result.messages; // Any messages, such as warnings during conversion
-//         // console.log("messages========", messages)
-
-//         writeFile({ path: "./" + fileName.split(".")[0] + ".html", content: html, showExeResult: true })
-//     })
-//     .done();
-
-
-

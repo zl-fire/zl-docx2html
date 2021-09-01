@@ -1,4 +1,3 @@
-// 接收一个html字页面符串--给标题注入id-->得到tree菜单结构---》生成菜单模板--》注入到页面内容
 import cheerio from "cheerio";
 import zl_ver_menu from "zl-ver-menu";
 import addHsId from "./addHsId";
@@ -7,7 +6,20 @@ import createEndMenuTempla from "./createEndMenuTempla";
 import resolveHtmlPageMenu from "./resolveHtmlPageMenu";
 import addHsOrder from "./addHsOrder";
 
-function addMenu2Page(html, fileName = "html文档", other) {
+/**
+    * @description 接收一个html字页面符串--给标题注入id-->得到tree菜单结构---》生成菜单模板--》注入到页面内容并返回
+    * @param {Object} parObj 完整的参数对象信息
+    * @param {String} parObj.html 要处理的html字符串
+    * @param {String} parObj.fileName 生成的html文件名（如果存在html,head,外层的标签的话）
+    * @param {Object} other 接收其他信息的对象
+    * @param {Boolean} other.isAddHtmlHead  是否不给转换后的文档添加html,body等标签,默认为true
+    * @param {Boolean} other.isAddMenu   是否给转换后的html文件注入锚点菜单,默认为true
+    * @param {Boolean} other.isAddOrder   是否添加手动生成的序号,默认为true
+    * @author zl-fire 2021/09/01
+    * @example
+    * let html = addMenu2Page(html, fileName);
+  */
+function addMenu2Page(html, fileName = "html文档", other={}) {
     let { isAddHtmlHead = true, isAddMenu = true, isAddOrder = true } = other;
     if (isAddMenu) {
         // 使用cheerio模块向页面中的所有标题注入id
@@ -23,7 +35,6 @@ function addMenu2Page(html, fileName = "html文档", other) {
         let { styleStr, templateStr, jsStr } = zl_ver_menu({
             show: false, data: menuJson,
             callback: function (par) {
-                console.log("===par===",par);
                 location.hash = $(par).attr("data-id");
             },
             width: "300px"
