@@ -29,7 +29,7 @@ function createEndMenuTempla(realMenu) {
     background-color: white;
     height:97vh;
     /*  overflow: scroll;*/
-    transition: all 0.5s;
+    transition: all 1s;
 
 }
 </style>

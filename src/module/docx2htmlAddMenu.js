@@ -18,6 +18,7 @@ let {
     * @param {Boolean} parObj.isAddHtmlHead  是否不给转换后的文档添加html,body等标签
     * @param {Boolean} parObj.isAddMenu   是否给转换后的html文件注入锚点菜单
     * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
+    * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
     * @author zl-fire 2021/09/01
     * @example
     *  let res=writeFile({path:"./test8.txt",content:"helloworld",showExeResult:true});
@@ -33,10 +34,10 @@ async function docx2htmlAddMenu(parObj) {
         isAddHtmlHead = true,
         isAddMenu = true,
         showWarnMessage = true,
+        showExeResult = true
     } = parObj;
     // 给输出路径添加默认值
     if (!outPath) outPath = docxPath.replace(extname, ".html");
-    console.log("=============",outPath)
     // 不含后缀的名字
     let fileName = basename.replace(extname, "");
     let { value, messages } = await mammoth.convertToHtml({ path: docxPath })  //通过path.join可以解决mac和window路径规则不一致的情况
@@ -48,7 +49,7 @@ async function docx2htmlAddMenu(parObj) {
     html = "<section>" + html + "</section>"; // The generated HTML
     html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu });
 
-    writeFile({ path: outPath, content: html, showExeResult: true })
+    writeFile({ path: outPath, content: html, showExeResult: showExeResult })
 }
 
 export default docx2htmlAddMenu

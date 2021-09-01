@@ -7,7 +7,7 @@ import createEndMenuTempla from "./createEndMenuTempla";
 import resolveHtmlPageMenu from "./resolveHtmlPageMenu";
 
 function addMenu2Page(html, fileName = "html文档", other) {
-    let { isAddHtmlHead=true, isAddMenu=true } = other;
+    let { isAddHtmlHead = true, isAddMenu = true } = other;
     if (isAddMenu) {
         // 使用cheerio模块向页面中的所有标题注入id
         const $ = cheerio.load(html);
@@ -26,6 +26,13 @@ function addMenu2Page(html, fileName = "html文档", other) {
         let realMenu = createEndMenuTempla(templateStr)
         // 然后向他包裹html标签
         html = styleStr + realMenu + html + jsStr;
+        // 如果要添加菜单 但是 不加头信息
+        if (isAddMenu && !isAddHtmlHead) {
+            html = `<body> 
+            <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
+             ${html}  
+           </body>"; `// The generated HTML
+        }
     }
     if (isAddHtmlHead) {
         html = addHtmlTag(html, fileName);

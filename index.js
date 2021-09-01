@@ -79,7 +79,7 @@
     background-color: white;
     height:97vh;
     /*  overflow: scroll;*/
-    transition: all 0.5s;
+    transition: all 1s;
 
 }
 </style>
@@ -120,7 +120,7 @@
     `;
     }
 
-    // 传入能获取所有页面元素的￥对象，从中获取由h1---h6组合成的树结构
+    // 传入能获取所有页面元素的$对象，从中获取由h1---h6组合成的树结构
     function resolveHtmlPageMenu($) {
         let hs = $("h1,h2,h3,h4,h5,h6");
         let list = [], listMap = {};
@@ -219,7 +219,7 @@
     // 接收一个html字页面符串--给标题注入id-->得到tree菜单结构---》生成菜单模板--》注入到页面内容
 
     function addMenu2Page(html, fileName = "html文档", other) {
-        let { isAddHtmlHead=true, isAddMenu=true } = other;
+        let { isAddHtmlHead = true, isAddMenu = true } = other;
         if (isAddMenu) {
             // 使用cheerio模块向页面中的所有标题注入id
             const $ = cheerio__default['default'].load(html);
@@ -238,6 +238,13 @@
             let realMenu = createEndMenuTempla(templateStr);
             // 然后向他包裹html标签
             html = styleStr + realMenu + html + jsStr;
+            // 如果要添加菜单 但是 不加头信息
+            if (isAddMenu && !isAddHtmlHead) {
+                html = `<body> 
+            <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
+             ${html}  
+           </body>"; `;// The generated HTML
+            }
         }
         if (isAddHtmlHead) {
             html = addHtmlTag(html, fileName);
@@ -264,6 +271,7 @@
         * @param {Boolean} parObj.isAddHtmlHead  是否不给转换后的文档添加html,body等标签
         * @param {Boolean} parObj.isAddMenu   是否给转换后的html文件注入锚点菜单
         * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
+        * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
         * @author zl-fire 2021/09/01
         * @example
         *  let res=writeFile({path:"./test8.txt",content:"helloworld",showExeResult:true});
@@ -279,10 +287,10 @@
             isAddHtmlHead = true,
             isAddMenu = true,
             showWarnMessage = true,
+            showExeResult = true
         } = parObj;
         // 给输出路径添加默认值
         if (!outPath) outPath = docxPath.replace(extname, ".html");
-        console.log("=============",outPath);
         // 不含后缀的名字
         let fileName = basename.replace(extname, "");
         let { value, messages } = await mammoth.convertToHtml({ path: docxPath });  //通过path.join可以解决mac和window路径规则不一致的情况
@@ -294,7 +302,7 @@
         html = "<section>" + html + "</section>"; // The generated HTML
         html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu });
 
-        writeFile({ path: outPath, content: html, showExeResult: true });
+        writeFile({ path: outPath, content: html, showExeResult: showExeResult });
     }
 
     exports.addMenu2Page = addMenu2Page;
