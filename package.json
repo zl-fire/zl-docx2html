@@ -11,7 +11,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
     "mammoth": "^1.4.18",
-    "zl-nodefs": "^1.0.5",
+    "zl-nodefs": "^1.0.6",
     "zl-ver-menu": "^1.0.6"
   },
   "repository": {

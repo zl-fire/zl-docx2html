@@ -1,4 +1,4 @@
-// 传入能获取所有页面元素的￥对象，从中获取由h1---h6组合成的树结构
+// 传入能获取所有页面元素的$对象，从中获取由h1---h6组合成的树结构
 function resolveHtmlPageMenu($) {
     let hs = $("h1,h2,h3,h4,h5,h6");
     let list = [], listMap = {};

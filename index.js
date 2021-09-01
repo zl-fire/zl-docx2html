@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('cheerio'), require('zl-ver-menu')) :
-    typeof define === 'function' && define.amd ? define(['cheerio', 'zl-ver-menu'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['zl-createhnmenu'] = factory(global.cheerio, global.zl_ver_menu));
-}(this, (function (cheerio, zl_ver_menu) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('cheerio'), require('zl-ver-menu')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'cheerio', 'zl-ver-menu'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global['zl-createhnmenu'] = {}, global.cheerio, global.zl_ver_menu));
+}(this, (function (exports, cheerio, zl_ver_menu) { 'use strict';
 
     function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -218,60 +218,88 @@
 
     // 接收一个html字页面符串--给标题注入id-->得到tree菜单结构---》生成菜单模板--》注入到页面内容
 
-    function addMenu2Page(html,fileName) {
-        // 使用cheerio模块向页面中的所有标题注入id
-        const $ = cheerio__default['default'].load(html);
-        html = addHsId($);
-        // 得到菜单json对象
-        let menuJson = resolveHtmlPageMenu($);
-        // 得到构建的菜单相关模板
-        let { styleStr, templateStr, jsStr } = zl_ver_menu__default['default']({
-            show: false, data: menuJson,
-            callback: function (par) {
-                location.hash = $(par).attr("data-id");
-            },
-            width: "300px"
-        });
-        // 根据模板构建真正的菜单
-        let realMenu = createEndMenuTempla(templateStr);
-        // 然后向他包裹html标签
-        html = addHtmlTag(styleStr + realMenu + html + jsStr, fileName);
+    function addMenu2Page(html, fileName = "html文档", other) {
+        let { isAddHtmlHead=true, isAddMenu=true } = other;
+        if (isAddMenu) {
+            // 使用cheerio模块向页面中的所有标题注入id
+            const $ = cheerio__default['default'].load(html);
+            html = addHsId($);
+            // 得到菜单json对象
+            let menuJson = resolveHtmlPageMenu($);
+            // 得到构建的菜单相关模板
+            let { styleStr, templateStr, jsStr } = zl_ver_menu__default['default']({
+                show: false, data: menuJson,
+                callback: function (par) {
+                    location.hash = $(par).attr("data-id");
+                },
+                width: "300px"
+            });
+            // 根据模板构建真正的菜单
+            let realMenu = createEndMenuTempla(templateStr);
+            // 然后向他包裹html标签
+            html = styleStr + realMenu + html + jsStr;
+        }
+        if (isAddHtmlHead) {
+            html = addHtmlTag(html, fileName);
+        }
         return html;
     }
 
-    // import mammoth from "mammoth";
-    // import zl_nodefs from "zl_nodefs";
-    // import resolveHtmlPageMenu from "./module/resolveHtmlPageMenu";
-    // // console.log( path.resolve("."))
-    // let {
-    //     writeFile, //创建/写入文件
-    //     deleteFile,//删除文件夹/文件
-    //     readFileList,//读取目录树tree
-    //     readFileContent,//读取文件内容
-    //     addFileContent //追加文件内容
-    // } = zl_nodefs;
+    let mammoth = require("mammoth");
+    var path = require("path");
+    let zl_nodefs = require("zl-nodefs");
+    let {
+        writeFile, //创建/写入文件
+        deleteFile,//删除文件夹/文件
+        readFileList,//读取目录树tree
+        readFileContent,//读取文件内容
+        addFileContent //追加文件内容
+    } = zl_nodefs;
 
+    /**
+        * @description 传入docx类型文档，会解析成html，同时给这个html注入菜单，最后写入指定的路径
+        * @param {Object} parObj 完整的参数对象信息
+        * @param {String} parObj.docxPath 要处理的docx文档路径
+        * @param {Any} parObj.outPath 要输出的html文档路径，默认为当前docx文件所在目录
+        * @param {Boolean} parObj.isAddHtmlHead  是否不给转换后的文档添加html,body等标签
+        * @param {Boolean} parObj.isAddMenu   是否给转换后的html文件注入锚点菜单
+        * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
+        * @author zl-fire 2021/09/01
+        * @example
+        *  let res=writeFile({path:"./test8.txt",content:"helloworld",showExeResult:true});
+        *  console.log("res",res)
+      */
+    async function docx2htmlAddMenu(parObj) {
+        // 获取文件名字和后缀
+        let basename = path.basename(parObj.docxPath);
+        let extname = path.extname(parObj.docxPath);
+        let {
+            docxPath,
+            outPath,
+            isAddHtmlHead = true,
+            isAddMenu = true,
+            showWarnMessage = true,
+        } = parObj;
+        // 给输出路径添加默认值
+        if (!outPath) outPath = docxPath.replace(extname, ".html");
+        console.log("=============",outPath);
+        // 不含后缀的名字
+        let fileName = basename.replace(extname, "");
+        let { value, messages } = await mammoth.convertToHtml({ path: docxPath });  //通过path.join可以解决mac和window路径规则不一致的情况
+        if (showWarnMessage) {
+            console.log(basename + "转换警告提示:", messages);
+        }
+        // 先拿到html字符串
+        let html = value;  // The generated HTML
+        html = "<section>" + html + "</section>"; // The generated HTML
+        html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu });
 
+        writeFile({ path: outPath, content: html, showExeResult: true });
+    }
 
-    // // let fileName="graphqlAPI.docx";
-    // let fileName = "666.docx";
-    // // // let fileName = "测试文档.doc";
-    // // console.log(path.resolve(".") + "\\" + fileName)
+    exports.addMenu2Page = addMenu2Page;
+    exports.docx2htmlAddMenu = docx2htmlAddMenu;
 
-    // // mammoth.convertToHtml({ path: path.resolve(".") + "\\" + fileName })  //文件路径需要给绝对的全路径(windows)
-    // mammoth.convertToHtml({ path: path.resolve(".") + "/" + fileName })  //文件路径需要给绝对的全路径 (mac)
-    //     .then(function (result) {
-    //         // 先拿到html字符串
-    //         var html = "<section>" + result.value + "</section>"; // The generated HTML
-    //         html = resolveHtmlPageMenu(html);
-    //         // html = JSON.stringify(html);
-    //         // var messages = result.messages; // Any messages, such as warnings during conversion
-    //         // console.log("messages========", messages)
-
-    //         writeFile({ path: "./" + fileName.split(".")[0] + ".html", content: html, showExeResult: true })
-    //     })
-    //     .done();
-
-    return addMenu2Page;
+    Object.defineProperty(exports, '__esModule', { value: true });
 
 })));

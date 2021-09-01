@@ -1,5 +1,9 @@
 import addMenu2Page from "./module/addMenu2Page";
-export default addMenu2Page;
+import docx2htmlAddMenu from "./module/docx2htmlAddMenu";
+export {
+    docx2htmlAddMenu,
+    addMenu2Page
+}
 
 // import mammoth from "mammoth";
 // import zl_nodefs from "zl_nodefs";
