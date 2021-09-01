@@ -216,20 +216,126 @@
         return list;
     }
 
+    // 将阿拉伯数字转换成中文的大写数字
+    function numberToChinese (num) {
+        var AA = new Array("零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十");
+        var BB = new Array("", "十", "百", "仟", "萬", "億", "点", "");
+        var a = ("" + num).replace(/(^0*)/g, "").split("."),
+            k = 0,
+            re = "";
+        for (var i = a[0].length - 1; i >= 0; i--) {
+            switch (k) {
+                case 0:
+                    re = BB[7] + re;
+                    break;
+                case 4:
+                    if (!new RegExp("0{4}//d{" + (a[0].length - i - 1) + "}$")
+                        .test(a[0]))
+                        re = BB[4] + re;
+                    break;
+                case 8:
+                    re = BB[5] + re;
+                    BB[7] = BB[5];
+                    k = 0;
+                    break;
+            }
+            if (k % 4 == 2 && a[0].charAt(i + 2) != 0 && a[0].charAt(i + 1) == 0)
+                re = AA[0] + re;
+            if (a[0].charAt(i) != 0)
+                re = AA[a[0].charAt(i)] + BB[k % 4] + re;
+            k++;
+        }
+
+        if (a.length > 1) // 加上小数部分(如果有小数部分)
+        {
+            re += BB[6];
+            for (var i = 0; i < a[1].length; i++)
+                re += AA[a[1].charAt(i)];
+        }
+        if (re == '一十')
+            re = "十";
+        if (re.match(/^一/) && re.length == 3)
+            re = re.replace("一", "");
+        return re;
+    }
+
+    function deepCall(children, id2HsMap) {
+        if (children && children.length > 0) {
+            for (let i = 0; i < children.length; i++) {
+                id2HsMap[children[i].eleId] = i + 1;
+                // 修改标题（加上序号）
+                let newName;
+                if (children[i].tag == "h1" || children[i].tag == "H1") {
+                    newName = numberToChinese(i + 1) + ". " + children[i].name;
+                }
+                else {
+                    newName = i + 1 + ". " + children[i].name;
+                }
+                children[i].name = newName;
+                //递归调用
+                deepCall(children[i].children, id2HsMap);
+            }
+        }
+    }
+
+    function addHsOrder($, list) {
+        var id2HsMap = {};
+        // 先给每个list标题编一个序号，id为键，序号为值
+        deepCall(list, id2HsMap);
+
+        // 然后在遍历所有标题，依次将序号写入进去
+        let hs = $("h1,h2,h3,h4,h5,h6");
+        for (let i = 0; i < hs.length; i++) {
+            let tagName, text;
+            try {
+                windows;
+                tagName = hs[i].tagName;
+                text = hs[i].innerText;
+            }
+            catch {
+                tagName = hs[i].name;
+                text = $(hs[i]).text();
+
+            }
+            let eleId = $(hs[i]).prop("id");
+            // 获取新的名字：序号+原名
+            let newName;
+            if (tagName == "h1" || tagName == "H1") {
+                newName = numberToChinese(id2HsMap[eleId]) + ". " + text;
+            }
+            else newName = id2HsMap[eleId] + ". " + text;
+            //向元素注入新的，名字
+            $(hs[i]).text(newName);
+        }
+        return $.html();
+    }
+
+
+    // let list=require("../../list.json");
+    // var id2HsMap = {};
+    // // 先给每个list标题编一个序号，id为键，序号为值
+    // deepCall(list,id2HsMap);
+    // console.log("====id2HsMap=====",id2HsMap)
+
     // 接收一个html字页面符串--给标题注入id-->得到tree菜单结构---》生成菜单模板--》注入到页面内容
 
     function addMenu2Page(html, fileName = "html文档", other) {
-        let { isAddHtmlHead = true, isAddMenu = true } = other;
+        let { isAddHtmlHead = true, isAddMenu = true, isAddOrder = true } = other;
         if (isAddMenu) {
             // 使用cheerio模块向页面中的所有标题注入id
             const $ = cheerio__default['default'].load(html);
             html = addHsId($);
             // 得到菜单json对象
             let menuJson = resolveHtmlPageMenu($);
+            if (isAddOrder) {
+                // 向页面标题中注入序号
+                html = addHsOrder($, menuJson);
+            }
             // 得到构建的菜单相关模板
             let { styleStr, templateStr, jsStr } = zl_ver_menu__default['default']({
                 show: false, data: menuJson,
                 callback: function (par) {
+                    console.log("===par===",par);
                     location.hash = $(par).attr("data-id");
                 },
                 width: "300px"
@@ -271,6 +377,9 @@
         * @param {Boolean} parObj.isAddHtmlHead  是否不给转换后的文档添加html,body等标签
         * @param {Boolean} parObj.isAddMenu   是否给转换后的html文件注入锚点菜单
         * @param {Boolean} parObj.autoHsSty   是否添加手动注入的h1--h6的大小样式
+        * @param {Boolean} parObj.isAddOrder   是否添加手动生成的序号
+        * @param {Boolean} parObj.isAddpagePadV   是否给页面注入默认的padding值
+        * @param {Boolean} parObj.manualAssignment   用户手动注入的样式对象
         * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
         * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
         * @author zl-fire 2021/09/01
@@ -289,7 +398,10 @@
             isAddMenu = true,
             showWarnMessage = true,
             showExeResult = true,
-            autoHsSty=true
+            autoHsSty = true,
+            isAddOrder = true,
+            isAddpagePadV = true,
+            manualAssignment
         } = parObj;
         // 给输出路径添加默认值
         if (!outPath) outPath = docxPath.replace(extname, ".html");
@@ -300,7 +412,7 @@
             console.log(basename + "转换警告提示:", messages);
         }
         // 手动设置调整的标题样式
-        let styStr = `
+        let HSstyStr = `
 <style>
     h1 {
         font-size: 32px;
@@ -327,13 +439,28 @@
     }
 </style>
     `;
+        // 手动设置页面padding值
+        let pagePadStrStr = `
+        <style>
+           body{
+               padding-left:20px !important;
+               padding-right:20px !important;;
+           }
+        </style>
+            `;
         // 先拿到html字符串
         let html = value;  // The generated HTML
-        if(autoHsSty){
-            html = value+styStr;
+        if (autoHsSty) {
+            html = HSstyStr + value;
+        }
+        if (isAddpagePadV) {
+            html = pagePadStrStr + html;
+        }
+        if (manualAssignment) {
+            html = html + manualAssignment;
         }
         html = "<section>" + html + "</section>"; // The generated HTML
-        html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu });
+        html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu, isAddOrder });
 
         writeFile({ path: outPath, content: html, showExeResult: showExeResult });
     }

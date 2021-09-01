@@ -18,6 +18,9 @@ let {
     * @param {Boolean} parObj.isAddHtmlHead  是否不给转换后的文档添加html,body等标签
     * @param {Boolean} parObj.isAddMenu   是否给转换后的html文件注入锚点菜单
     * @param {Boolean} parObj.autoHsSty   是否添加手动注入的h1--h6的大小样式
+    * @param {Boolean} parObj.isAddOrder   是否添加手动生成的序号
+    * @param {Boolean} parObj.isAddpagePadV   是否给页面注入默认的padding值
+    * @param {Boolean} parObj.manualAssignment   用户手动注入的样式对象
     * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
     * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
     * @author zl-fire 2021/09/01
@@ -36,7 +39,10 @@ async function docx2htmlAddMenu(parObj) {
         isAddMenu = true,
         showWarnMessage = true,
         showExeResult = true,
-        autoHsSty=true
+        autoHsSty = true,
+        isAddOrder = true,
+        isAddpagePadV = true,
+        manualAssignment
     } = parObj;
     // 给输出路径添加默认值
     if (!outPath) outPath = docxPath.replace(extname, ".html");
@@ -47,7 +53,7 @@ async function docx2htmlAddMenu(parObj) {
         console.log(basename + "转换警告提示:", messages);
     }
     // 手动设置调整的标题样式
-    let styStr = `
+    let HSstyStr = `
 <style>
     h1 {
         font-size: 32px;
@@ -74,13 +80,28 @@ async function docx2htmlAddMenu(parObj) {
     }
 </style>
     `;
+    // 手动设置页面padding值
+    let pagePadStrStr = `
+        <style>
+           body{
+               padding-left:20px !important;
+               padding-right:20px !important;;
+           }
+        </style>
+            `;
     // 先拿到html字符串
     let html = value  // The generated HTML
-    if(autoHsSty){
-        html = value+styStr;
+    if (autoHsSty) {
+        html = HSstyStr + value;
+    }
+    if (isAddpagePadV) {
+        html = pagePadStrStr + html;
+    }
+    if (manualAssignment) {
+        html = html + manualAssignment;
     }
     html = "<section>" + html + "</section>"; // The generated HTML
-    html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu });
+    html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu, isAddOrder });
 
     writeFile({ path: outPath, content: html, showExeResult: showExeResult })
 }
