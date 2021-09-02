@@ -1,11 +1,11 @@
 {
-  "name": "zl-createhnmenu",
+  "name": "zl-docx2html",
   "version": "1.0.1",
   "description": "接收要转换的页面内容字符串，自动读取页面的h1--h6标签内容与结构，生成导航锚点菜单",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "pak": "rollup src/main.js --file index.js --format umd --name 'zl-createhnmenu'",
+    "pak": "rollup src/main.js --file index.js --format umd --name 'zl-docx2html'",
     "getDTS": "tsc -d --allowJS src/*.js"
   },
   "dependencies": {
@@ -16,13 +16,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zl-fire/zl-createhnmenu.git"
+    "url": "git+https://github.com/zl-fire/zl-docx2html.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/zl-fire/zl-createhnmenu/issues"
+    "url": "https://github.com/zl-fire/zl-docx2html/issues"
   },
-  "homepage": "https://github.com/zl-fire/zl-createhnmenu#readme"
+  "homepage": "https://github.com/zl-fire/zl-docx2html#readme"
 }
