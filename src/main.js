@@ -1,7 +1,7 @@
 import addHtmlTag from "./module/addHtmlTag";
 import addMenu2Page from "./module/addMenu2Page";
 import createEndMenuTempla from "./module/createEndMenuTempla";
-import docx2htmlAddMenu from "./module/docx2htmlAddMenu";
+import docx2html from "./module/docx2html";
 import numberToChinese from "./module/numberToChinese";
 import numToEng from "./module/numToEng";
 import resolveHtmlPageMenu from "./module/resolveHtmlPageMenu";
@@ -14,6 +14,6 @@ let utils = {
 };
 export {
     addMenu2Page,  //如果已有html字符串 就可以调用这个函数
-    docx2htmlAddMenu, //如果要从docx文档转换为含有菜单的html页面 就可以调用这个函数
+    docx2html, //如果要从docx文档转换为含有菜单的html页面 就可以调用这个函数
     utils
 }
