@@ -22,7 +22,7 @@ let {
     * @author zl-fire 2021/09/01
     * @example
     * var path = require("path");
-    * let { docx2htmlAddMenu } = require("zl-createhnmenu");
+    * let { docx2htmlAddMenu } = require("zl-docx2html");
     * let fileName = "666.docx";
     * let docxPath = path.join(path.resolve("."), fileName); //通过path.join可以解决mac和window路径规则不一致的情况
     * let outPath = path.join(path.resolve("."), "/aa/bb/cc/dd/", fileName.split(".")[0]+".html");
