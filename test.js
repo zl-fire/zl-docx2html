@@ -1,11 +1,78 @@
 var path = require("path");
 // import docx2html from "./docx2html";
 // import deepCallGetMapObj from "./deepCallGetMapObj";
-let deepCallGetMapObj = require("./deepCallGetMapObj");
+// let deepCallGetMapObj = require("./deepCallGetMapObj");
 let zl_nodefs = require("zl-nodefs");
 let {
     readFileList,//读取目录下的文件列表
 } = zl_nodefs;
+
+
+/**
+ * @description 递归遍历对象数组，生成一个map对象,指定字段为键，对象元素为值
+ * @param {Object} parObj 完整的参数对象信息
+ * @param {String} parObj.list 要处理的对象数组
+ * @param {String} parObj.id2objMap 生成的map对象
+ * @param {Boolean} parObj.field  作为id的指定键
+ * @author zl-fire 2021/09/02
+ * @example
+ * let list=[
+ *     {
+ *         "id": 111,
+ *         "name": 222
+ *     },
+ *     {
+ *         "id": 222,
+ *         "name": 333,
+ *         "children": [
+ *             {
+ *                 "id": 333,
+ *                 "name": 444
+ *             }
+ *         ]
+ *     }
+ * ];
+ * let id2objMap={};
+ * let field="id";
+ * deepCallGetMapObj({ list, id2objMap, field});
+ * console.log(id2objMap);
+ * //id2objMap值将会如下所示
+ * {
+ *     "111": {
+ *         "id": 111,
+ *         "name": 222
+ *     },
+ *     "222": {
+ *         "id": 222,
+ *         "name": 333,
+ *         "children": [
+ *             {
+ *                 "id": 333,
+ *                 "name": 444
+ *             }
+ *         ]
+ *     },
+ *     "333": {
+ *         "id": 333,
+ *         "name": 444
+ *     }
+ * }
+*/
+function deepCallGetMapObj(parObj) {
+    let { list, id2objMap, field } = parObj;
+    if (list && list.length > 0) {
+        for (let i = 0; i < list.length; i++) {
+            id2objMap[list[i][field]] = list[i];
+            //递归调用
+            if (list[i].children)
+                deepCallGetMapObj({ list: list[i].children, id2objMap, field });
+        }
+    }
+}
+// export default deepCallGetMapObj
+
+
+
 /**
     * @description 传入一个目录路径，将此路径下的所有docx文件批量转换为html文件
     * @param {Object} parObj 完整的参数对象信息
@@ -54,68 +121,33 @@ async function batchDocx2html(parObj) {
         ignoreList: ["node_modules", ".git"],
         needTypes: [".docx"],
     });
-    console.log("============list", JSON.stringify(list, null, 4))
-    // // 递归遍历对象数组，生成一个map对象
+
+
+    //递归遍历对象数组，生成一个map对象
     let id2objMap = { 0: { children: list } };
     deepCallGetMapObj({ list, id2objMap, field: "id" });
-    console.log("======id2objMap========", id2objMap);
-    var changFlag = 0;
-    filterEmptyDir(list, id2objMap);
-    listnExePro({
-        callBack: function () {
-            console.log("============list======", JSON.stringify(list, null, 4));
-        }
-    });
-    
-    function listnExePro(parObj = {}) {
-        let {
-            backChangFlag = 0,//用于和标识变量比较的备份值
-            times = 0,//连续没有变化的次数
-            num = 3,//设置多少次标识不变就认为是已经完成
-            msV = 1000,//设置每过多少毫秒扫描一次
-            callBack = function () {
-                console.log("每"+msV+"毫秒扫描一次，连续"+num+"次都没发生变化，认为异步已经执行结束!");
-            }
-        } = parObj;
-        let timer = setInterval(function () {
-            if (changFlag != backChangFlag) {
-                backChangFlag = changFlag;
-            }
-            else {
-                times++;
-            }
-            if (times = num) {  //连续n秒都没有变化，认为已经结束
-                clearInterval(timer);
-                callBack();
-            }
-        }, msV)
-    }
-
+    delEmptyDir(list, id2objMap);
 
     // 将空目录（即没有我需要的类型文件的目录）过滤掉
-    function filterEmptyDir(list, id2objMap) {
-        for (let i = 0; i < list.length; i++) {
+    function delEmptyDir(list, id2objMap) {
+        for (let i = list.length - 1; i >= 0; i--) {
             let Obj = list[i];
-            // 这里写定时器+自执行函数的目的是为了，保证随着数组元素的删除，i值已经不准确的情况下，逻辑正确
-            (function (Obj) {
-                setTimeout(function () {
-                    // 判断是否为文件
-                    if (!Obj.children) {  //children不存在，则认为是文件
-                        return;
-                    }
-                    else if (Obj.children && Obj.children.length == 0) {  //children存在，但为空，则认为是空目录
-                        let parent_id = Obj.parent_id;
-                        console.log("============删除空目录", JSON.stringify(Obj, null, 4))
-                        let index = list.indexOf(Obj);
-                        changFlag++;//表示变化了
-                        list.splice(index, 1);
-                        deepCall2Top(parent_id, id2objMap); // 每删完一次就查看父级的children数组是否为空，如果为空就把父级也删了
-                    }
-                    else if (Obj.children && Obj.children.length > 0) {  //children存在，且不为空
-                        filterEmptyDir(Obj.children, id2objMap);
-                    }
-                }, 0)
-            })(Obj)
+            // 判断是否为文件
+            if (!Obj.children) {  //children不存在，则认为是文件
+                return;
+            }
+            else if (Obj.children && Obj.children.length == 0) {  //children存在，但为空，则认为是空目录
+                let parent_id = Obj.parent_id;
+                console.log("============删除空目录", JSON.stringify(Obj, null, 4))
+                let index = list.indexOf(Obj);
+                changFlag++;//表示变化了
+                list.splice(index, 1);
+                deepCall2Top(parent_id, id2objMap); // 每删完一次就查看父级的children数组是否为空，如果为空就把父级也删了
+            }
+            else if (Obj.children && Obj.children.length > 0) {  //children存在，且不为空
+                filterEmptyDir(Obj.children, id2objMap);
+            }
+
         }
     }
 
@@ -131,7 +163,6 @@ async function batchDocx2html(parObj) {
         // 如果父级对象的children已经为空，那么就删除此父级对象，同时在往上寻找
         if (parentObj.children.length == 0) {
             let index = parent_parObj.children.indexOf(parentObj)
-            console.log("============删除空目录", JSON.stringify(parent_parObj.children[index], null, 4))
             parent_parObj.children.splice(index, 1);
             changFlag++;//表示变化了
             // 同时递归调用自身，往上层查找

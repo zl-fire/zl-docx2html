@@ -52,15 +52,6 @@ async function batchDocx2html(parObj) {
         ignoreList: ["node_modules", ".git"],
         needTypes: [".docx"],
     });
-    // // 递归遍历对象数组，生成一个map对象
-    let id2objMap = {};
-    deepCallGetMapObj({ list, id2objMap, field: "id" });
-    // console.log("======id2objMap========", id2objMap);
-    signEmptyDir(list, id2objMap); //标识空目录
-    console.log("============list======11", JSON.stringify(list, null, 4))
-    deleteEmpty(list);
-    console.log("============list======22", JSON.stringify(list, null, 4));
-
 }
 
 // export default batchDocx2html;
