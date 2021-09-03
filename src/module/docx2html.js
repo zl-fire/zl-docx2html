@@ -7,7 +7,8 @@ let {
 } = zl_nodefs;
 
 /**
-    * @description 传入docx类型文档，会解析成html，同时给这个html注入菜单，最后写入指定的路径
+    * @function  传入docx类型文档，会解析成html，同时给这个html注入菜单，最后写入指定的路径
+    * @description 这是个异步函数，因为调用转换docx的内置模块时是异步的
     * @param {Object} parObj 完整的参数对象信息
     * @param {String} parObj.docxPath 要处理的docx文档路径
     * @param {String} parObj.outPath 要输出的html文档路径，默认为当前docx文件所在目录

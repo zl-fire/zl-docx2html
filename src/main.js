@@ -5,6 +5,7 @@ import docx2html from "./module/docx2html";
 import numberToChinese from "./module/numberToChinese";
 import numToEng from "./module/numToEng";
 import resolveHtmlPageMenu from "./module/resolveHtmlPageMenu";
+import batchDocx2html from "./module/batchDocx2html";
 let utils = {
     addHtmlTag, //给html主体内容字符串包裹html,head,body标签
     createEndMenuTempla,//返回要固定定位的菜单容器字符串
@@ -15,5 +16,6 @@ let utils = {
 export {
     addMenu2Page,  //如果已有html字符串 就可以调用这个函数
     docx2html, //如果要从docx文档转换为含有菜单的html页面 就可以调用这个函数
+    batchDocx2html,//传入一个目录路径，将此路径下的所有docx文件批量转换为html文件（不管层级有多深）
     utils
 }

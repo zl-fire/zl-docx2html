@@ -6,8 +6,9 @@
   */
 function resolveHtmlPageMenu($) {
     let hs = $("h1,h2,h3,h4,h5,h6");
-    let list = [], listMap = {};
+    let list = [];
     let parEle = { tag: "root", id: "root" }; //标识当前操作的父标签，默认为root
+    let listMap = { "root": parEle };
     for (let i = 0; i < hs.length; i++) {
         let innerText, tagName, eleId;
         try {

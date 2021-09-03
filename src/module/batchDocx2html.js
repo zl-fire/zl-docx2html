@@ -1,11 +1,11 @@
 var path = require("path");
-// import docx2html from "./docx2html";
+import docx2html from "./docx2html";
 let zl_nodefs = require("zl-nodefs");
 let {
     readFileList,//读取目录下的文件列表
 } = zl_nodefs;
 /**
-    * @description 传入一个目录路径，将此路径下的所有docx文件批量转换为html文件
+    * @description 传入一个目录路径，将此路径下的所有docx文件批量转换为html文件（不管层级有多深）
     * @param {Object} parObj 完整的参数对象信息
     * @param {String} parObj.dirPath 要处理目录路径，可传入绝对路径，也可传入相对路径
     * @param {String} parObj.outPath 要输出的html文档路径
@@ -46,20 +46,49 @@ async function batchDocx2html(parObj) {
         isAddpagePadV = true,
         manualAssignment
     } = parObj;
-    //获取指定路径下的所有docx文件
+
+    //获取指定路径下的所有docx文件，不限层级
     let list = readFileList({
         dirPath: dirPath,
         ignoreList: ["node_modules", ".git"],
         needTypes: [".docx"],
+        isfilterEmptyDir: true
     });
+    console.log("====list=====", JSON.stringify(list, null, 4));
+    // 开始把list中的所有docx文件进行转换
+    // 设置docx文件的基础路径
+    let docxBasePath = dirPath;
+    // 如果用户没有主动传入输出路径，就将html生成到当前word基础目录的同级目录下
+    let htmlBasePath = outPath || path.join(docxBasePath, "../", "html" + new Date().getTime());
+    await recursionCreateHtmlFile(list, docxBasePath, htmlBasePath);
+    console.log("转换完成");
+
 }
 
-// export default batchDocx2html;
+async function recursionCreateHtmlFile(list, currentDocxPath, currentHtmlPath) {
+    for (let i = 0; i < list.length; i++) {
+        let obj = list[i];
+        let { name, children } = obj;
+        // console.log("=====currentDocxPath=========",currentDocxPath);
+        // console.log("=====currentHtmlPath=========",currentHtmlPath);
+        //   children存在，说明是目录d
+        if (children) {
+            await recursionCreateHtmlFile(children, currentDocxPath + "/" + name, currentHtmlPath + "/" + name);
+        }
+        else {
+            console.log("=====docxPath=========", currentDocxPath + "/" + name);
+            console.log("=====outPath=========", currentHtmlPath + "/" + name.replace(name.match(/\.\w+$/)[0], "") + ".html");
 
-batchDocx2html({
-    dirPath: "./"
-})
+            await docx2html({
+                docxPath: currentDocxPath + "/" + name,
+                outPath: currentHtmlPath + "/" + name.replace(name.match(/\.\w+$/)[0], "") + ".html",
+                showWarnMessage: false,
+            });
+        }
+    }
 
-// let extname = path.extname("1. vue一些补充知识点.docx");
 
-// console.log("===extname====", extname, /\.\w+$/.test(extname));
+
+}
+
+export default batchDocx2html;
