@@ -19,7 +19,7 @@ import addHsOrder from "./addHsOrder";
     * @example
     * let html = addMenu2Page(html, fileName);
   */
-function addMenu2Page(html, fileName = "html文档", other={}) {
+function addMenu2Page(html, fileName = "html文档", other = {}) {
     let { isAddHtmlHead = true, isAddMenu = true, isAddOrder = true } = other;
     if (isAddMenu) {
         // 使用cheerio模块向页面中的所有标题注入id
@@ -27,13 +27,20 @@ function addMenu2Page(html, fileName = "html文档", other={}) {
         html = addHsId($);
         // 得到菜单json对象
         let menuJson = resolveHtmlPageMenu($);
+        // 如果页面不存在任何菜单
+        if (menuJson.length == 0) {
+            if (isAddHtmlHead) {
+                html = addHtmlTag(html, fileName);
+            }
+            return html;
+        }
         if (isAddOrder) {
             // 向页面标题中注入序号
             html = addHsOrder($, menuJson);
         }
         // 得到构建的菜单相关模板
         let { styleStr, templateStr, jsStr } = zl_ver_menu({
-            show: false, 
+            show: false,
             data: menuJson,
             callback: function (par) {
                 location.hash = $(par).attr("data-id");
