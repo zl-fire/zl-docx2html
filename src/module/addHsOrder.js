@@ -52,20 +52,20 @@ function handOrder({ tagName, text, id2HsMap, eleId, orderNum }) {
     if (tagName == "h1" || tagName == "H1") {
         newName = numberToChinese(orderNum) + ". " + text;//格式:一. 
     }
-    else if (tagName == "h2" || tagName == "H2") { //格式:(一).
-        newName = "(" + numberToChinese(orderNum) + "). " + text;
+    else if (tagName == "h2" || tagName == "H2") {
+        newName = "(" + numberToChinese(orderNum) + "). " + text;//格式:(一).
     }
-    else if (tagName == "h3" || tagName == "H3") { //格式:1). 
-        newName = orderNum + "). " + text;
+    else if (tagName == "h3" || tagName == "H3") {
+        newName = orderNum + "). " + text;//格式:1). 
     }
-    else if (tagName == "h4" || tagName == "H4") {//格式:(1). 
-        newName = "(" + orderNum + "). " + text;
+    else if (tagName == "h4" || tagName == "H4") {
+        newName = "(" + orderNum + "). " + text;//格式:(1). 
     }
-    else if (tagName == "h5" || tagName == "H5") { //格式:A. 
-        newName = numToEng(orderNum, true) + ". " + text;
+    else if (tagName == "h5" || tagName == "H5") {
+        newName = numToEng(orderNum, true)  + ". " + text;//格式:A. 
     }
-    else { 
-        newName = numToEng(orderNum) + ". " + text; //格式:a. 
+    else {
+        newName = numToEng(orderNum)  + ". " + text;//格式:a.
     }
     return newName;
 }

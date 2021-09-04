@@ -284,19 +284,32 @@
   }
 
   /**
-      * @description 通过ASCII码的方式将1-26转换为字母a-z(可大写可小写)
-      * @param {number} num 要转换的阿拉伯数字1-26
+      * @description 将数字转换为英文字母，大于26的数字也可以，并可控制大写和小写
+      * @param {number} i 要转换的阿拉伯数字
       * @param {boolean} big true:大写，false|不传:为小写
       * @author zl-fire 2021/09/01
-      * @return {string} 英文字母a-zA-Z
+      * @return {string} a-z英文字母
       * @example
       * let n=numToEng(1);//返回'a'
     */
-  function numToEng(num,big) {
-      // 默认转换为小写
-      if(!big){
-        return String.fromCharCode(64 + parseInt(num) + 32);
+  function numToEng(i, big) {
+    var s = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z";
+    // 默认小写（即没传big或big未false时，就为小写）
+    if (!big) {
+      s = s.toLocaleLowerCase();
+    }
+    var sArray = s.split(" ");
+    if (i < 1) {
+      return "";
+    } else if (parseInt((i / 26) + "") == 0) {
+      return sArray[i % 26 - 1];
+    } else {
+      if (i % 26 == 0) {
+        return (transform(parseInt((i / 26) + "") - 1)) + sArray[26 - 1];
+      } else {
+        return sArray[parseInt((i / 26) + "") - 1] + sArray[i % 26 - 1];
       }
+    }
   }
 
   // 先给每个list标题编一个序号，在给所有的id一致的标题注入这个序号
@@ -350,20 +363,20 @@
       if (tagName == "h1" || tagName == "H1") {
           newName = numberToChinese(orderNum) + ". " + text;//格式:一. 
       }
-      else if (tagName == "h2" || tagName == "H2") { //格式:(一).
-          newName = "(" + numberToChinese(orderNum) + "). " + text;
+      else if (tagName == "h2" || tagName == "H2") {
+          newName = "(" + numberToChinese(orderNum) + "). " + text;//格式:(一).
       }
-      else if (tagName == "h3" || tagName == "H3") { //格式:1). 
-          newName = orderNum + "). " + text;
+      else if (tagName == "h3" || tagName == "H3") {
+          newName = orderNum + "). " + text;//格式:1). 
       }
-      else if (tagName == "h4" || tagName == "H4") {//格式:(1). 
-          newName = "(" + orderNum + "). " + text;
+      else if (tagName == "h4" || tagName == "H4") {
+          newName = "(" + orderNum + "). " + text;//格式:(1). 
       }
-      else if (tagName == "h5" || tagName == "H5") { //格式:A. 
-          newName = numToEng(orderNum, true) + ". " + text;
+      else if (tagName == "h5" || tagName == "H5") {
+          newName = numToEng(orderNum, true)  + ". " + text;//格式:A. 
       }
-      else { 
-          newName = numToEng(orderNum) + ". " + text; //格式:a. 
+      else {
+          newName = numToEng(orderNum)  + ". " + text;//格式:a.
       }
       return newName;
   }
@@ -421,11 +434,11 @@
   }
 
   let mammoth = require("mammoth");
-  var path = require("path");
-  let zl_nodefs = require("zl-nodefs");
+  var path$1 = require("path");
+  let zl_nodefs$1 = require("zl-nodefs");
   let {
       writeFile, //创建/写入文件
-  } = zl_nodefs;
+  } = zl_nodefs$1;
 
   /**
       * @function  传入docx类型文档，会解析成html，同时给这个html注入菜单，最后写入指定的路径
@@ -458,8 +471,8 @@
     */
   async function docx2html(parObj) {
       // 获取文件名字和后缀
-      let basename = path.basename(parObj.docxPath);
-      let extname = path.extname(parObj.docxPath);
+      let basename = path$1.basename(parObj.docxPath);
+      let extname = path$1.extname(parObj.docxPath);
       let {
           docxPath,
           outPath,
@@ -476,7 +489,16 @@
       if (!outPath) outPath = docxPath.replace(extname, ".html");
       // 不含后缀的名字
       let fileName = basename.replace(extname, "");
-      let { value, messages } = await mammoth.convertToHtml({ path: docxPath });  //通过path.join可以解决mac和window路径规则不一致的情况
+      let docxInfo;
+      try {
+          docxInfo = await mammoth.convertToHtml({ path: docxPath });  //通过path.join可以解决mac和window路径规则不一致的情况
+      } catch (err) {
+          console.log("===========docx2html调用失败 :【" + docxPath + "】 可能不是一个有效的docx文档========");
+          console.log("======[无效文件可能原因：docx文件打开后产生的临时文件，或 ，直接将doc后缀改成docx后的文件 或...]=====");
+          console.log(err);
+          return;
+      }
+      let { value, messages } = docxInfo;
       if (showWarnMessage) {
           console.log(basename + "转换警告提示:", messages);
       }
@@ -534,11 +556,31 @@
       writeFile({ path: outPath, content: html, showExeResult: showExeResult });
   }
 
-  var path$1 = require("path");
-  let zl_nodefs$1 = require("zl-nodefs");
+  /**
+      * @description 通过ASCII码的方式将1-26转换为字母a-z(可大写可小写)
+      * @param {number} num 要转换的阿拉伯数字1-26
+      * @param {boolean} big true:大写，false|不传:为小写
+      * @author zl-fire 2021/09/01
+      * @return {string} 英文字母a-zA-Z
+      * @example
+      * let n=numToEng0_26(1);//返回'a'
+    */
+   function numToEng0_26(num, big) {
+      // 默认转换为小写
+      if (!big) {
+        return String.fromCharCode(64 + parseInt(num) + 32);
+      }
+      else {
+        // 转换为大写
+        return String.fromCharCode(64 + parseInt(num));
+      }
+    }
+
+  var path = require("path");
+  let zl_nodefs = require("zl-nodefs");
   let {
       readFileList,//读取目录下的文件列表
-  } = zl_nodefs$1;
+  } = zl_nodefs;
   /**
       * @description 传入一个目录路径，将此路径下的所有docx文件批量转换为html文件（不管层级有多深）
       * @param {Object} parObj 完整的参数对象信息
@@ -589,48 +631,48 @@
           needTypes: [".docx"],
           isfilterEmptyDir: true
       });
-      console.log("====list=====", JSON.stringify(list, null, 4));
-      // 开始把list中的所有docx文件进行转换
+      if (showExeResult) console.log("====当前目录结构为：=====\n", JSON.stringify(list, null, 4));
+      // ========开始把list中的所有docx文件进行转换==========
       // 设置docx文件的基础路径
       let docxBasePath = dirPath;
       // 如果用户没有主动传入输出路径，就将html生成到当前word基础目录的同级目录下
-      let htmlBasePath = outPath || path$1.join(docxBasePath, "../", "html" + new Date().getTime());
+      let htmlBasePath = outPath || path.join(docxBasePath, "../", "html" + new Date().getTime());
       await recursionCreateHtmlFile(list, docxBasePath, htmlBasePath);
-      console.log("转换完成");
+      if (showExeResult) console.log("=============目录" + docxBasePath + "下的docx文件转换完毕================");
 
-  }
+      async function recursionCreateHtmlFile(list, currentDocxPath, currentHtmlPath) {
+          for (let i = 0; i < list.length; i++) {
+              let obj = list[i];
+              let { name, children } = obj;
+              //   children存在，说明是目录
+              if (children) {
+                  await recursionCreateHtmlFile(children, currentDocxPath + "/" + name, currentHtmlPath + "/" + name);
+              }
+              else {
+                  await docx2html({
+                      docxPath: currentDocxPath + "/" + name,
+                      outPath: currentHtmlPath + "/" + name.replace(name.match(/\.\w+$/)[0], "") + ".html",
+                      isAddHtmlHead,
+                      isAddMenu,
+                      showWarnMessage,
+                      showExeResult,
+                      autoHsSty,
+                      isAddOrder,
+                      isAddpagePadV,
+                      manualAssignment
+                  });
 
-  async function recursionCreateHtmlFile(list, currentDocxPath, currentHtmlPath) {
-      for (let i = 0; i < list.length; i++) {
-          let obj = list[i];
-          let { name, children } = obj;
-          // console.log("=====currentDocxPath=========",currentDocxPath);
-          // console.log("=====currentHtmlPath=========",currentHtmlPath);
-          //   children存在，说明是目录d
-          if (children) {
-              await recursionCreateHtmlFile(children, currentDocxPath + "/" + name, currentHtmlPath + "/" + name);
-          }
-          else {
-              console.log("=====docxPath=========", currentDocxPath + "/" + name);
-              console.log("=====outPath=========", currentHtmlPath + "/" + name.replace(name.match(/\.\w+$/)[0], "") + ".html");
-
-              await docx2html({
-                  docxPath: currentDocxPath + "/" + name,
-                  outPath: currentHtmlPath + "/" + name.replace(name.match(/\.\w+$/)[0], "") + ".html",
-                  showWarnMessage: false,
-              });
+              }
           }
       }
-
-
-
   }
 
   let utils = {
       addHtmlTag, //给html主体内容字符串包裹html,head,body标签
       createEndMenuTempla,//返回要固定定位的菜单容器字符串
       numberToChinese,//将阿拉伯数字转换成中文的大写数字
-      numToEng,//通过ASCII码的方式将1-26转换为字母a-z(可大写可小写)
+      numToEng,//将数字转换为英文字母，大于26的数字也可以，并可控制大写和小写
+      numToEng0_26,//通过ASCII码的方式将1-26转换为字母a-z(可大写可小写)
       resolveHtmlPageMenu,//传入能获取所有页面元素的$对象，从中获取由h1---h6组合成的树结构
   };
 

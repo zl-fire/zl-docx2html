@@ -55,7 +55,16 @@ async function docx2html(parObj) {
     if (!outPath) outPath = docxPath.replace(extname, ".html");
     // 不含后缀的名字
     let fileName = basename.replace(extname, "");
-    let { value, messages } = await mammoth.convertToHtml({ path: docxPath })  //通过path.join可以解决mac和window路径规则不一致的情况
+    let docxInfo;
+    try {
+        docxInfo = await mammoth.convertToHtml({ path: docxPath })  //通过path.join可以解决mac和window路径规则不一致的情况
+    } catch (err) {
+        console.log("===========docx2html调用失败 :【" + docxPath + "】 可能不是一个有效的docx文档========");
+        console.log("======[无效文件可能原因：docx文件打开后产生的临时文件，或 ，直接将doc后缀改成docx后的文件 或...]=====");
+        console.log(err);
+        return;
+    }
+    let { value, messages } = docxInfo;
     if (showWarnMessage) {
         console.log(basename + "转换警告提示:", messages);
     }

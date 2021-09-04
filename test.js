@@ -9,8 +9,10 @@ var { batchDocx2html, docx2html } = require("./index.js");
 // })()
 
 batchDocx2html({
-    dirPath: "./doctest",
-    outPath:"./HTML"
+    // dirPath: "./doctest",
+    dirPath: "./",
+    outPath:"./HTML",
+    showWarnMessage: false,
 });
 
 // let extname = path.extname("1. vue一些补充知识点.docx");

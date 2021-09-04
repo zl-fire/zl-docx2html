@@ -1,4 +1,3 @@
-export var __esModule: boolean;
 /**
     * @description 接收一个html字页面符串--给标题注入id-->得到tree菜单结构---》生成菜单模板--》注入到页面内容并返回
     * @param {Object} parObj 完整的参数对象信息
@@ -18,11 +17,11 @@ export function addMenu2Page(html: any, fileName?: string, other?: {
     isAddOrder: boolean;
 }): any;
 /**
-    * @description 传入docx类型文档，会解析成html，同时给这个html注入菜单，最后写入指定的路径
+    * @description 传入一个目录路径，将此路径下的所有docx文件批量转换为html文件（不管层级有多深）
     * @param {Object} parObj 完整的参数对象信息
-    * @param {String} parObj.docxPath 要处理的docx文档路径
-    * @param {String} parObj.outPath 要输出的html文档路径，默认为当前docx文件所在目录
-    * @param {Boolean} parObj.isAddHtmlHead  是否不给转换后的文档添加html,body等标签
+    * @param {String} parObj.dirPath 要处理目录路径，可传入绝对路径，也可传入相对路径
+    * @param {String} parObj.outPath 要输出的html文档路径
+    * @param {Boolean} parObj.isAddHtmlHead  是否给转换后的文档添加html,body等标签
     * @param {Boolean} parObj.isAddMenu   是否给转换后的html文件注入锚点菜单
     * @param {Boolean} parObj.autoHsSty   是否添加手动注入的h1--h6的大小样式
     * @param {Boolean} parObj.isAddOrder   是否添加手动生成的序号
@@ -33,19 +32,60 @@ export function addMenu2Page(html: any, fileName?: string, other?: {
     * @author zl-fire 2021/09/01
     * @example
     * var path = require("path");
-    * let { docx2htmlAddMenu } = require("zl-createhnmenu");
+    * let { docx2html } = require("zl-docx2html");
     * let fileName = "666.docx";
     * let docxPath = path.join(path.resolve("."), fileName); //通过path.join可以解决mac和window路径规则不一致的情况
     * let outPath = path.join(path.resolve("."), "/aa/bb/cc/dd/", fileName.split(".")[0]+".html");
     * (async function () {
-    *     await docx2htmlAddMenu({
+    *     await docx2html({
     *         docxPath: docxPath,
     *         outPath: outPath,
     *         showWarnMessage: false,
     *     })
     * })()
   */
-export function docx2htmlAddMenu(parObj: {
+export function batchDocx2html(parObj: {
+    dirPath: string;
+    outPath: string;
+    isAddHtmlHead: boolean;
+    isAddMenu: boolean;
+    autoHsSty: boolean;
+    isAddOrder: boolean;
+    isAddpagePadV: boolean;
+    manualAssignment: boolean;
+    showWarnMessage: boolean;
+    showExeResult: boolean;
+}): Promise<void>;
+/**
+    * @function  传入docx类型文档，会解析成html，同时给这个html注入菜单，最后写入指定的路径
+    * @description 这是个异步函数，因为调用转换docx的内置模块时是异步的
+    * @param {Object} parObj 完整的参数对象信息
+    * @param {String} parObj.docxPath 要处理的docx文档路径
+    * @param {String} parObj.outPath 要输出的html文档路径，默认为当前docx文件所在目录
+    * @param {Boolean} parObj.isAddHtmlHead  是否给转换后的文档添加html,body等标签
+    * @param {Boolean} parObj.isAddMenu   是否给转换后的html文件注入锚点菜单
+    * @param {Boolean} parObj.autoHsSty   是否添加手动注入的h1--h6的大小样式
+    * @param {Boolean} parObj.isAddOrder   是否添加手动生成的序号
+    * @param {Boolean} parObj.isAddpagePadV   是否给页面注入默认的padding值
+    * @param {Boolean} parObj.manualAssignment   用户手动注入的样式对象
+    * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
+    * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
+    * @author zl-fire 2021/09/01
+    * @example
+    * var path = require("path");
+    * let { docx2html } = require("zl-docx2html");
+    * let fileName = "666.docx";
+    * let docxPath = path.join(path.resolve("."), fileName); //通过path.join可以解决mac和window路径规则不一致的情况
+    * let outPath = path.join(path.resolve("."), "/aa/bb/cc/dd/", fileName.split(".")[0]+".html");
+    * (async function () {
+    *     await docx2html({
+    *         docxPath: docxPath,
+    *         outPath: outPath,
+    *         showWarnMessage: false,
+    *     })
+    * })()
+  */
+export function docx2html(parObj: {
     docxPath: string;
     outPath: string;
     isAddHtmlHead: boolean;
@@ -62,8 +102,10 @@ export namespace utils {
     export { createEndMenuTempla };
     export { numberToChinese };
     export { numToEng };
+    export { numToEng0_26 };
     export { resolveHtmlPageMenu };
 }
+export var __esModule: boolean;
 /**
     * @description 如果内容没有外层的html，body包裹，则可使用此函数进行处理
     * @param {string} content 要处理的html字符串
@@ -89,15 +131,25 @@ declare function createEndMenuTempla(realMenu: string): string;
   */
 declare function numberToChinese(num: number): string;
 /**
+    * @description 将数字转换为英文字母，大于26的数字也可以，并可控制大写和小写
+    * @param {number} i 要转换的阿拉伯数字
+    * @param {boolean} big true:大写，false|不传:为小写
+    * @author zl-fire 2021/09/01
+    * @return {string} a-z英文字母
+    * @example
+    * let n=numToEng(1);//返回'a'
+  */
+declare function numToEng(i: number, big: boolean): string;
+/**
     * @description 通过ASCII码的方式将1-26转换为字母a-z(可大写可小写)
     * @param {number} num 要转换的阿拉伯数字1-26
     * @param {boolean} big true:大写，false|不传:为小写
     * @author zl-fire 2021/09/01
     * @return {string} 英文字母a-zA-Z
     * @example
-    * let n=numToEng(1);//返回'a'
+    * let n=numToEng0_26(1);//返回'a'
   */
-declare function numToEng(num: number, big: boolean): string;
+declare function numToEng0_26(num: number, big: boolean): string;
 /**
     * @description 传入能获取所有页面元素的$对象，从中获取由h1---h6组合成的树结构
     * @param {object} $ 能获取所有页面元素的$对象，这里使用的cheerio

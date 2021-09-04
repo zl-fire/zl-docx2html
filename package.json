@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "pak": "rollup src/main.js --file index.js --format umd --name 'zl-docx2html'",
+    "tsc": "tsc -d --allowJS index.js",
     "getDTS": "tsc -d --allowJS src/*.js"
   },
   "dependencies": {

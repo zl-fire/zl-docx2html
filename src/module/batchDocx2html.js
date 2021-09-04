@@ -54,41 +54,42 @@ async function batchDocx2html(parObj) {
         needTypes: [".docx"],
         isfilterEmptyDir: true
     });
-    console.log("====list=====", JSON.stringify(list, null, 4));
-    // 开始把list中的所有docx文件进行转换
+    if (showExeResult) console.log("====当前目录结构为：=====\n", JSON.stringify(list, null, 4));
+    // ========开始把list中的所有docx文件进行转换==========
     // 设置docx文件的基础路径
     let docxBasePath = dirPath;
     // 如果用户没有主动传入输出路径，就将html生成到当前word基础目录的同级目录下
     let htmlBasePath = outPath || path.join(docxBasePath, "../", "html" + new Date().getTime());
     await recursionCreateHtmlFile(list, docxBasePath, htmlBasePath);
-    console.log("转换完成");
+    if (showExeResult) console.log("=============目录" + docxBasePath + "下的docx文件转换完毕================");
 
-}
+    async function recursionCreateHtmlFile(list, currentDocxPath, currentHtmlPath) {
+        for (let i = 0; i < list.length; i++) {
+            let obj = list[i];
+            let { name, children } = obj;
+            //   children存在，说明是目录
+            if (children) {
+                await recursionCreateHtmlFile(children, currentDocxPath + "/" + name, currentHtmlPath + "/" + name);
+            }
+            else {
+                await docx2html({
+                    docxPath: currentDocxPath + "/" + name,
+                    outPath: currentHtmlPath + "/" + name.replace(name.match(/\.\w+$/)[0], "") + ".html",
+                    isAddHtmlHead,
+                    isAddMenu,
+                    showWarnMessage,
+                    showExeResult,
+                    autoHsSty,
+                    isAddOrder,
+                    isAddpagePadV,
+                    manualAssignment
+                });
 
-async function recursionCreateHtmlFile(list, currentDocxPath, currentHtmlPath) {
-    for (let i = 0; i < list.length; i++) {
-        let obj = list[i];
-        let { name, children } = obj;
-        // console.log("=====currentDocxPath=========",currentDocxPath);
-        // console.log("=====currentHtmlPath=========",currentHtmlPath);
-        //   children存在，说明是目录d
-        if (children) {
-            await recursionCreateHtmlFile(children, currentDocxPath + "/" + name, currentHtmlPath + "/" + name);
-        }
-        else {
-            console.log("=====docxPath=========", currentDocxPath + "/" + name);
-            console.log("=====outPath=========", currentHtmlPath + "/" + name.replace(name.match(/\.\w+$/)[0], "") + ".html");
-
-            await docx2html({
-                docxPath: currentDocxPath + "/" + name,
-                outPath: currentHtmlPath + "/" + name.replace(name.match(/\.\w+$/)[0], "") + ".html",
-                showWarnMessage: false,
-            });
+            }
         }
     }
-
-
-
 }
+
+
 
 export default batchDocx2html;
