@@ -493,9 +493,9 @@
       try {
           docxInfo = await mammoth.convertToHtml({ path: docxPath });  //通过path.join可以解决mac和window路径规则不一致的情况
       } catch (err) {
-          console.log("===========docx2html调用失败 :【" + docxPath + "】 可能不是一个有效的docx文档========");
-          console.log("======[无效文件可能原因：docx文件打开后产生的临时文件，或 ，直接将doc后缀改成docx后的文件 或...]=====");
-          console.log(err);
+          console.log("\n-------------------------------");
+          console.log("[出错了哦]----" + docxPath + "---- 转换失败. \n[错误提示] ", err.message, "\n[可能原因] 此docx文件是一个临时文件, 或是被改了后缀的docx文件, 或是空的docx文件, 或...==");
+          console.log("-------------------------------\n");
           return;
       }
       let { value, messages } = docxInfo;
@@ -596,18 +596,14 @@
       * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
       * @author zl-fire 2021/09/01
       * @example
-      * var path = require("path");
-      * let { docx2html } = require("zl-docx2html");
-      * let fileName = "666.docx";
-      * let docxPath = path.join(path.resolve("."), fileName); //通过path.join可以解决mac和window路径规则不一致的情况
-      * let outPath = path.join(path.resolve("."), "/aa/bb/cc/dd/", fileName.split(".")[0]+".html");
-      * (async function () {
-      *     await docx2html({
-      *         docxPath: docxPath,
-      *         outPath: outPath,
-      *         showWarnMessage: false,
-      *     })
-      * })()
+      * 
+      * let { batchDocx2html } = require("zl-docx2html");
+      * batchDocx2html({
+      *     dirPath: "./",
+      *     outPath:"./HTML",
+      *     showWarnMessage: false,
+      * });
+      * 
     */
   async function batchDocx2html(parObj) {
       // 对参数进行解构
@@ -638,7 +634,7 @@
       // 如果用户没有主动传入输出路径，就将html生成到当前word基础目录的同级目录下
       let htmlBasePath = outPath || path.join(docxBasePath, "../", "html" + new Date().getTime());
       await recursionCreateHtmlFile(list, docxBasePath, htmlBasePath);
-      if (showExeResult) console.log("=============目录" + docxBasePath + "下的docx文件转换完毕================");
+      console.log("\n\n=============目录[" + docxBasePath + "]下的docx文件转换完毕================\n\n");
 
       async function recursionCreateHtmlFile(list, currentDocxPath, currentHtmlPath) {
           for (let i = 0; i < list.length; i++) {

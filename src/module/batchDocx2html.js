@@ -19,18 +19,14 @@ let {
     * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
     * @author zl-fire 2021/09/01
     * @example
-    * var path = require("path");
-    * let { docx2html } = require("zl-docx2html");
-    * let fileName = "666.docx";
-    * let docxPath = path.join(path.resolve("."), fileName); //通过path.join可以解决mac和window路径规则不一致的情况
-    * let outPath = path.join(path.resolve("."), "/aa/bb/cc/dd/", fileName.split(".")[0]+".html");
-    * (async function () {
-    *     await docx2html({
-    *         docxPath: docxPath,
-    *         outPath: outPath,
-    *         showWarnMessage: false,
-    *     })
-    * })()
+    * 
+    * let { batchDocx2html } = require("zl-docx2html");
+    * batchDocx2html({
+    *     dirPath: "./",
+    *     outPath:"./HTML",
+    *     showWarnMessage: false,
+    * });
+    * 
   */
 async function batchDocx2html(parObj) {
     // 对参数进行解构
@@ -61,7 +57,7 @@ async function batchDocx2html(parObj) {
     // 如果用户没有主动传入输出路径，就将html生成到当前word基础目录的同级目录下
     let htmlBasePath = outPath || path.join(docxBasePath, "../", "html" + new Date().getTime());
     await recursionCreateHtmlFile(list, docxBasePath, htmlBasePath);
-    if (showExeResult) console.log("=============目录" + docxBasePath + "下的docx文件转换完毕================");
+    console.log("\n\n=============目录[" + docxBasePath + "]下的docx文件转换完毕================\n\n");
 
     async function recursionCreateHtmlFile(list, currentDocxPath, currentHtmlPath) {
         for (let i = 0; i < list.length; i++) {

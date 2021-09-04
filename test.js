@@ -13,6 +13,7 @@ batchDocx2html({
     dirPath: "./",
     outPath:"./HTML",
     showWarnMessage: false,
+    showExeResult:false
 });
 
 // let extname = path.extname("1. vue一些补充知识点.docx");
