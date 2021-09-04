@@ -1,7 +1,7 @@
 # zl-docx2html --- docx文档转换为网页
 
 **此模块主要功能**
-1. docx2html：将单个docx文档转换为html网页文件
+1. docx2html：将单个docx文档转换为html网页文件，node环境可用
 2. batchDocx2html：将批量docx文档转换为html网页文件，node环境可用
 3. addMenu2Page：解析html字符串，自动生成导航锚点菜单，node环境可用
 4. utils：开发过程中产生的一些工具函数
