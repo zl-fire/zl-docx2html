@@ -10,10 +10,12 @@ var { batchDocx2html, docx2html } = require("./index.js");
 
 batchDocx2html({
     // dirPath: "./doctest",
-    dirPath: "./",
+    dirPath: "../",
     outPath:"./HTML",
     showWarnMessage: false,
-    showExeResult:false
+    showExeResult:true,
+    isList2file:true,
+    list2filePath:"./aa/bb/cc/dd/tt/tree.json"
 });
 
 // let extname = path.extname("1. vue一些补充知识点.docx");

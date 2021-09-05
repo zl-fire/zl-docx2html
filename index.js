@@ -444,7 +444,7 @@
   var path$1 = require("path");
   let zl_nodefs$1 = require("zl-nodefs");
   let {
-      writeFile, //创建/写入文件
+      writeFile: writeFile$1, //创建/写入文件
   } = zl_nodefs$1;
 
   /**
@@ -560,7 +560,7 @@
       html = "<section>" + html + "</section>"; // The generated HTML
       html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu, isAddOrder });
 
-      writeFile({ path: outPath, content: html, showExeResult: showExeResult });
+      writeFile$1({ path: outPath, content: html, showExeResult: showExeResult });
   }
 
   /**
@@ -587,6 +587,7 @@
   let zl_nodefs = require("zl-nodefs");
   let {
       readFileList,//读取目录下的文件列表
+      writeFile,//将数据写入文件
   } = zl_nodefs;
   /**
       * @description 传入一个目录路径，将此路径下的所有docx文件批量转换为html文件（不管层级有多深）
@@ -601,7 +602,10 @@
       * @param {Boolean} parObj.manualAssignment   用户手动注入的样式对象
       * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
       * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
+      * @param {Boolean} parObj.isList2file   要转换的的文件树结构是否要写入文件
+      * @param {Boolean} parObj.list2filePath   要转换的的文件树结构要写入文件时的文件路径
       * @author zl-fire 2021/09/01
+      * @returns {object[]} 返回当前目录下要转换的的文件树结构
       * @example
       * 
       * let { batchDocx2html } = require("zl-docx2html");
@@ -624,6 +628,8 @@
           autoHsSty = true,
           isAddOrder = true,
           isAddpagePadV = true,
+          isList2file = false,//默认树结构不写入文件
+          list2filePath="",//要转换的的文件树结构要写入文件时的文件路径
           manualAssignment
       } = parObj;
 
@@ -635,6 +641,15 @@
           isfilterEmptyDir: true
       });
       if (showExeResult) console.log("====当前目录结构为：=====\n", JSON.stringify(list, null, 4));
+      // 是否将目录树写入到磁盘中
+      if (isList2file) {
+          if (!list2filePath) list2filePath = outPath + "/tree.json";
+          writeFile({
+              path: list2filePath,
+              content: JSON.stringify(list),
+              showExeResult: showExeResult,
+          });
+      }
       // ========开始把list中的所有docx文件进行转换==========
       // 设置docx文件的基础路径
       let docxBasePath = dirPath;
@@ -668,6 +683,8 @@
               }
           }
       }
+
+      return list;
   }
 
   let utils = {
