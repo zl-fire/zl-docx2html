@@ -29,7 +29,10 @@ export function addMenu2Page(html: any, fileName?: string, other?: {
     * @param {Boolean} parObj.manualAssignment   用户手动注入的样式对象
     * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
     * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
+    * @param {Boolean} parObj.isList2file   要转换的的文件树结构是否要写入文件
+    * @param {Boolean} parObj.list2filePath   要转换的的文件树结构要写入文件时的文件路径
     * @author zl-fire 2021/09/01
+    * @returns {object[]} 返回当前目录下要转换的的文件树结构
     * @example
     *
     * let { batchDocx2html } = require("zl-docx2html");
@@ -51,7 +54,9 @@ export function batchDocx2html(parObj: {
     manualAssignment: boolean;
     showWarnMessage: boolean;
     showExeResult: boolean;
-}): Promise<void>;
+    isList2file: boolean;
+    list2filePath: boolean;
+}): object[];
 /**
     * @function  传入docx类型文档，会解析成html，同时给这个html注入菜单，最后写入指定的路径
     * @description 这是个异步函数，因为调用转换docx的内置模块时是异步的
