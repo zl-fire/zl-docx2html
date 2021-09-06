@@ -45,7 +45,7 @@ async function batchDocx2html(parObj) {
         isAddOrder = true,
         isAddpagePadV = true,
         isList2file = false,//默认树结构不写入文件
-        list2filePath="",//要转换的的文件树结构要写入文件时的文件路径
+        list2filePath = "",//要转换的的文件树结构要写入文件时的文件路径
         manualAssignment
     } = parObj;
 
@@ -78,14 +78,16 @@ async function batchDocx2html(parObj) {
         for (let i = 0; i < list.length; i++) {
             let obj = list[i];
             let { name, children } = obj;
+            let docxPath = path.join(currentDocxPath, name);
+            let htmlPath = path.join(currentHtmlPath, name);
             //   children存在，说明是目录
             if (children) {
-                await recursionCreateHtmlFile(children, currentDocxPath + "/" + name, currentHtmlPath + "/" + name);
+                await recursionCreateHtmlFile(children, docxPath, htmlPath);
             }
             else {
                 await docx2html({
-                    docxPath: currentDocxPath + "/" + name,
-                    outPath: currentHtmlPath + "/" + name.replace(name.match(/\.\w+$/)[0], "") + ".html",
+                    docxPath: docxPath,
+                    outPath: htmlPath.replace(name.match(/\.\w+$/)[0], "") + ".html",
                     isAddHtmlHead,
                     isAddMenu,
                     showWarnMessage,
