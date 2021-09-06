@@ -441,11 +441,11 @@
   }
 
   let mammoth = require("mammoth");
-  var path$1 = require("path");
-  let zl_nodefs$1 = require("zl-nodefs");
+  var path = require("path");
+  let zl_nodefs = require("zl-nodefs");
   let {
-      writeFile: writeFile$1, //创建/写入文件
-  } = zl_nodefs$1;
+      writeFile, //创建/写入文件
+  } = zl_nodefs;
 
   /**
       * @function  传入docx类型文档，会解析成html，同时给这个html注入菜单，最后写入指定的路径
@@ -478,8 +478,8 @@
     */
   async function docx2html(parObj) {
       // 获取文件名字和后缀
-      let basename = path$1.basename(parObj.docxPath);
-      let extname = path$1.extname(parObj.docxPath);
+      let basename = path.basename(parObj.docxPath);
+      let extname = path.extname(parObj.docxPath);
       let {
           docxPath,
           outPath,
@@ -560,7 +560,7 @@
       html = "<section>" + html + "</section>"; // The generated HTML
       html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu, isAddOrder });
 
-      writeFile$1({ path: outPath, content: html, showExeResult: showExeResult });
+      writeFile({ path: outPath, content: html, showExeResult: showExeResult });
   }
 
   /**
@@ -583,12 +583,12 @@
       }
     }
 
-  var path = require("path");
-  let zl_nodefs = require("zl-nodefs");
+  var path$1 = require("path");
+  let zl_nodefs$1 = require("zl-nodefs");
   let {
       readFileList,//读取目录下的文件列表
-      writeFile,//将数据写入文件
-  } = zl_nodefs;
+      writeFile: writeFile$1,//将数据写入文件
+  } = zl_nodefs$1;
   /**
       * @description 传入一个目录路径，将此路径下的所有docx文件批量转换为html文件（不管层级有多深）
       * @param {Object} parObj 完整的参数对象信息
@@ -629,7 +629,7 @@
           isAddOrder = true,
           isAddpagePadV = true,
           isList2file = false,//默认树结构不写入文件
-          list2filePath="",//要转换的的文件树结构要写入文件时的文件路径
+          list2filePath = "",//要转换的的文件树结构要写入文件时的文件路径
           manualAssignment
       } = parObj;
 
@@ -644,7 +644,7 @@
       // 是否将目录树写入到磁盘中
       if (isList2file) {
           if (!list2filePath) list2filePath = outPath + "/tree.json";
-          writeFile({
+          writeFile$1({
               path: list2filePath,
               content: JSON.stringify(list),
               showExeResult: showExeResult,
@@ -654,7 +654,7 @@
       // 设置docx文件的基础路径
       let docxBasePath = dirPath;
       // 如果用户没有主动传入输出路径，就将html生成到当前word基础目录的同级目录下
-      let htmlBasePath = outPath || path.join(docxBasePath, "../", "html" + new Date().getTime());
+      let htmlBasePath = outPath || path$1.join(docxBasePath, "../", "html" + new Date().getTime());
       await recursionCreateHtmlFile(list, docxBasePath, htmlBasePath);
       console.log("\n\n=============目录[" + docxBasePath + "]下的docx文件转换完毕================\n\n");
 
@@ -662,14 +662,16 @@
           for (let i = 0; i < list.length; i++) {
               let obj = list[i];
               let { name, children } = obj;
+              let docxPath = path$1.join(currentDocxPath, name);
+              let htmlPath = path$1.join(currentHtmlPath, name);
               //   children存在，说明是目录
               if (children) {
-                  await recursionCreateHtmlFile(children, currentDocxPath + "/" + name, currentHtmlPath + "/" + name);
+                  await recursionCreateHtmlFile(children, docxPath, htmlPath);
               }
               else {
                   await docx2html({
-                      docxPath: currentDocxPath + "/" + name,
-                      outPath: currentHtmlPath + "/" + name.replace(name.match(/\.\w+$/)[0], "") + ".html",
+                      docxPath: docxPath,
+                      outPath: htmlPath.replace(name.match(/\.\w+$/)[0], "") + ".html",
                       isAddHtmlHead,
                       isAddMenu,
                       showWarnMessage,
