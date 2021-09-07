@@ -79,7 +79,7 @@ export function addMenu2Page(html: any, fileName?: string, other?: {
     * @param {Boolean} parObj.autoHsSty   是否添加手动注入的h1--h6的大小样式
     * @param {Boolean} parObj.isAddOrder   是否添加手动生成的序号
     * @param {Boolean} parObj.isAddpagePadV   是否给页面注入默认的padding值
-    * @param {Boolean} parObj.manualAssignment   用户手动注入的样式对象
+    * @param {String} parObj.manualAssignment   用户手动注入的样式对象字符串：·<style>...</style>·
     * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
     * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
     * @param {Boolean} parObj.isList2file   要转换的的文件树结构是否要写入文件
@@ -123,7 +123,7 @@ export function batchDocx2html(parObj: {
     * @param {Boolean} parObj.autoHsSty   是否添加手动注入的h1--h6的大小样式
     * @param {Boolean} parObj.isAddOrder   是否添加手动生成的序号
     * @param {Boolean} parObj.isAddpagePadV   是否给页面注入默认的padding值
-    * @param {Boolean} parObj.manualAssignment   用户手动注入的样式对象
+    * @param {String} parObj.manualAssignment   用户手动注入的样式对象字符串：·<style>...</style>·
     * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
     * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
     * @author zl-fire 2021/09/01
