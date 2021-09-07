@@ -441,11 +441,11 @@
   }
 
   let mammoth = require("mammoth");
-  var path = require("path");
-  let zl_nodefs = require("zl-nodefs");
+  var path$1 = require("path");
+  let zl_nodefs$1 = require("zl-nodefs");
   let {
-      writeFile, //创建/写入文件
-  } = zl_nodefs;
+      writeFile: writeFile$1, //创建/写入文件
+  } = zl_nodefs$1;
 
   /**
       * @function  传入docx类型文档，会解析成html，同时给这个html注入菜单，最后写入指定的路径
@@ -458,7 +458,7 @@
       * @param {Boolean} parObj.autoHsSty   是否添加手动注入的h1--h6的大小样式
       * @param {Boolean} parObj.isAddOrder   是否添加手动生成的序号
       * @param {Boolean} parObj.isAddpagePadV   是否给页面注入默认的padding值
-      * @param {Boolean} parObj.manualAssignment   用户手动注入的样式对象
+      * @param {String} parObj.manualAssignment   用户手动注入的样式对象字符串：·<style>...</style>·
       * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
       * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
       * @author zl-fire 2021/09/01
@@ -478,8 +478,8 @@
     */
   async function docx2html(parObj) {
       // 获取文件名字和后缀
-      let basename = path.basename(parObj.docxPath);
-      let extname = path.extname(parObj.docxPath);
+      let basename = path$1.basename(parObj.docxPath);
+      let extname = path$1.extname(parObj.docxPath);
       let {
           docxPath,
           outPath,
@@ -560,7 +560,7 @@
       html = "<section>" + html + "</section>"; // The generated HTML
       html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu, isAddOrder });
 
-      writeFile({ path: outPath, content: html, showExeResult: showExeResult });
+      writeFile$1({ path: outPath, content: html, showExeResult: showExeResult });
   }
 
   /**
@@ -583,12 +583,12 @@
       }
     }
 
-  var path$1 = require("path");
-  let zl_nodefs$1 = require("zl-nodefs");
+  var path = require("path");
+  let zl_nodefs = require("zl-nodefs");
   let {
       readFileList,//读取目录下的文件列表
-      writeFile: writeFile$1,//将数据写入文件
-  } = zl_nodefs$1;
+      writeFile,//将数据写入文件
+  } = zl_nodefs;
   /**
       * @description 传入一个目录路径，将此路径下的所有docx文件批量转换为html文件（不管层级有多深）
       * @param {Object} parObj 完整的参数对象信息
@@ -599,7 +599,7 @@
       * @param {Boolean} parObj.autoHsSty   是否添加手动注入的h1--h6的大小样式
       * @param {Boolean} parObj.isAddOrder   是否添加手动生成的序号
       * @param {Boolean} parObj.isAddpagePadV   是否给页面注入默认的padding值
-      * @param {Boolean} parObj.manualAssignment   用户手动注入的样式对象
+      * @param {String} parObj.manualAssignment   用户手动注入的样式对象字符串：·<style>...</style>·
       * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
       * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
       * @param {Boolean} parObj.isList2file   要转换的的文件树结构是否要写入文件
@@ -644,7 +644,7 @@
       // 是否将目录树写入到磁盘中
       if (isList2file) {
           if (!list2filePath) list2filePath = outPath + "/tree.json";
-          writeFile$1({
+          writeFile({
               path: list2filePath,
               content: JSON.stringify(list),
               showExeResult: showExeResult,
@@ -654,7 +654,7 @@
       // 设置docx文件的基础路径
       let docxBasePath = dirPath;
       // 如果用户没有主动传入输出路径，就将html生成到当前word基础目录的同级目录下
-      let htmlBasePath = outPath || path$1.join(docxBasePath, "../", "html" + new Date().getTime());
+      let htmlBasePath = outPath || path.join(docxBasePath, "../", "html" + new Date().getTime());
       await recursionCreateHtmlFile(list, docxBasePath, htmlBasePath);
       console.log("\n\n=============目录[" + docxBasePath + "]下的docx文件转换完毕================\n\n");
 
@@ -662,8 +662,8 @@
           for (let i = 0; i < list.length; i++) {
               let obj = list[i];
               let { name, children } = obj;
-              let docxPath = path$1.join(currentDocxPath, name);
-              let htmlPath = path$1.join(currentHtmlPath, name);
+              let docxPath = path.join(currentDocxPath, name);
+              let htmlPath = path.join(currentHtmlPath, name);
               //   children存在，说明是目录
               if (children) {
                   await recursionCreateHtmlFile(children, docxPath, htmlPath);
