@@ -12,6 +12,12 @@
      * numToEng,//将数字转换为英文字母，大于26的数字也可以，并可控制大写和小写
      * resolveHtmlPageMenu,//传入能获取所有页面元素的$对象，从中获取由h1---h6组合成的树结构（你应该使用cheerio,适用于nodejs环境）
 
+## 安装
+
+```js
+npm i zl-docx2html -S
+```
+
 ## 引入与使用
 
 ```js
