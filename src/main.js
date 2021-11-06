@@ -1,3 +1,4 @@
+import Md2Html from "./module/Md2Html";
 import addHtmlTag from "./module/addHtmlTag";
 import addMenu2Page from "./module/addMenu2Page";
 import createEndMenuTempla from "./module/createEndMenuTempla";
@@ -8,6 +9,7 @@ import numToEng0_26 from "./module/numToEng0_26";
 import resolveHtmlPageMenu from "./module/resolveHtmlPageMenu";
 import batchDocx2html from "./module/batchDocx2html";
 let utils = {
+    Md2Html,//将md文档转换为html字符串
     addHtmlTag, //给html主体内容字符串包裹html,head,body标签
     createEndMenuTempla,//返回要固定定位的菜单容器字符串
     numberToChinese,//将阿拉伯数字转换成中文的大写数字

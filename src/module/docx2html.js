@@ -1,6 +1,7 @@
 let mammoth = require("mammoth");
 var path = require("path");
 import addMenu2Page from "./addMenu2Page";
+import Md2Html from "./Md2Html";
 let zl_nodefs = require("zl-nodefs");
 let {
     writeFile, //创建/写入文件
@@ -55,9 +56,19 @@ async function docx2html(parObj) {
     if (!outPath) outPath = docxPath.replace(extname, ".html");
     // 不含后缀的名字
     let fileName = basename.replace(extname, "");
-    let docxInfo;
+    let docxInfo,docTypeObj={};
     try {
-        docxInfo = await mammoth.convertToHtml({ path: docxPath })  //通过path.join可以解决mac和window路径规则不一致的情况
+        // 说明是docx文档
+        if (extname === ".docx") {
+            docxInfo = await mammoth.convertToHtml({ path: docxPath })  //通过path.join可以解决mac和window路径规则不一致的情况
+        }
+        // 说明是markdown文档
+        else if (extname === ".md") {
+            let content = await new Md2Html(docxPath).md2html();
+            content=`<article class="markdown-body">${content}</article>`;
+            docxInfo={ value:content, messages:"markdown文档" };
+            docTypeObj={docType:"md"};
+        }
     } catch (err) {
         console.log("\n-------------------------------");
         console.log("[出错了哦]----" + docxPath + "---- 转换失败. \n[错误提示] ", err.message, "\n[可能原因] 此docx文件是一个临时文件, 或是被改了后缀的docx文件, 或是空的docx文件, 或...==");
@@ -117,7 +128,7 @@ async function docx2html(parObj) {
         html = html + manualAssignment;
     }
     html = "<section>" + html + "</section>"; // The generated HTML
-    html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu, isAddOrder });
+    html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu, isAddOrder,...docTypeObj});
 
     writeFile({ path: outPath, content: html, showExeResult: showExeResult })
 }

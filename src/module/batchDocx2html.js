@@ -53,7 +53,7 @@ async function batchDocx2html(parObj) {
     let list = readFileList({
         dirPath: dirPath,
         ignoreList: ["node_modules", ".git"],
-        needTypes: [".docx"],
+        needTypes: [".docx",".md"],
         isfilterEmptyDir: true
     });
     if (showExeResult) console.log("====当前目录结构为：=====\n", JSON.stringify(list, null, 4));

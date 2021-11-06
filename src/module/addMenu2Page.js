@@ -15,12 +15,13 @@ import addHsOrder from "./addHsOrder";
     * @param {Boolean} other.isAddHtmlHead  是否不给转换后的文档添加html,body等标签,默认为true
     * @param {Boolean} other.isAddMenu   是否给转换后的html文件注入锚点菜单,默认为true
     * @param {Boolean} other.isAddOrder   是否添加手动生成的序号,默认为true
+    * @param {Boolean} other.docType   原始文档类型，不传的话默认为doxc，可传如md
     * @author zl-fire 2021/09/01
     * @example
     * let html = addMenu2Page(html, fileName);
   */
 function addMenu2Page(html, fileName = "html文档", other = {}) {
-    let { isAddHtmlHead = true, isAddMenu = true, isAddOrder = true } = other;
+    let { isAddHtmlHead = true, isAddMenu = true, isAddOrder = true,docType } = other;
     if (isAddMenu) {
         // 使用cheerio模块向页面中的所有标题注入id
         const $ = cheerio.load(html);
@@ -60,8 +61,9 @@ function addMenu2Page(html, fileName = "html文档", other = {}) {
         }
     }
     if (isAddHtmlHead) {
-        html = addHtmlTag(html, fileName);
+        html = addHtmlTag(html, fileName,docType);
     }
+
     return html;
 }
 
