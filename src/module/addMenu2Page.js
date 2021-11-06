@@ -41,12 +41,12 @@ function addMenu2Page(html, fileName = "html文档", other = {}) {
         }
         // 得到构建的菜单相关模板
         let { styleStr, templateStr, jsStr } = zl_ver_menu({
-            show: false,
+            show: true,
             data: menuJson,
             callback: function (par) {
                 location.hash = $(par).attr("data-id");
             },
-            width: "300px"
+            width: "281px"
         });
         // 将模板字符串作为内容 构建固定定位的实际菜单
         let realMenu = createEndMenuTempla(templateStr)

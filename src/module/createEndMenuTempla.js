@@ -31,7 +31,7 @@ function createEndMenuTempla(realMenu) {
     border-radius: 10px 0 0 10px;
     top:5px;
     right: -410px;
-    background-color: white;
+    background-color: #c5bcbc;
     height:97vh;
     /*  overflow: scroll;*/
     transition: all 1s;
@@ -63,13 +63,26 @@ function createEndMenuTempla(realMenu) {
         // anchorLinkContent.onclick = function () {
         //     anchorLinkContent.style.cssText = "right:-410px;";
         // };
-
-        anchorLinkMene.onmouseenter = function () {
-            anchorLinkContent.style.cssText = "right:0;"
+        function resizefn(){
+            if(document.documentElement.clientWidth<1440){
+                anchorLinkContent.style.cssText = "right:-410px;"
+                anchorLinkMene.onmouseenter = function () {
+                    anchorLinkContent.style.cssText = "right:0;"
+                }
+                anchorLinkContent.onmouseleave = function () {
+                    anchorLinkContent.style.cssText = "right:-410px;"
+                }
+            }
+            else{
+                anchorLinkContent.style.cssText = "right:0;"
+                anchorLinkMene.onmouseenter=null;
+                anchorLinkContent.onmouseleave=null;
+            }
         }
-        anchorLinkContent.onmouseleave = function () {
-            anchorLinkContent.style.cssText = "right:-410px;"
-        }
+        resizefn();//初始化执行一次
+        window.onresize=function(){
+            resizefn();
+          }
     }
     </script>
     `;

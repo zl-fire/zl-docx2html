@@ -47,7 +47,7 @@
 
     .zl-ver-menu {
        /* width: 230px; */
-        width: 300px;
+        width: 281px;
         background: #fff;
         border: 1px solid #e7e7e9;
         border-top-width: 0px;
@@ -113,7 +113,7 @@
     border-radius: 10px 0 0 10px;
     top:5px;
     right: -410px;
-    background-color: white;
+    background-color: #c5bcbc;
     height:97vh;
     /*  overflow: scroll;*/
     transition: all 1s;
@@ -142,13 +142,26 @@
         // anchorLinkContent.onclick = function () {
         //     anchorLinkContent.style.cssText = "right:-410px;";
         // };
-
-        anchorLinkMene.onmouseenter = function () {
-            anchorLinkContent.style.cssText = "right:0;"
+        function resizefn(){
+            if(document.documentElement.clientWidth<1440){
+                anchorLinkContent.style.cssText = "right:-410px;"
+                anchorLinkMene.onmouseenter = function () {
+                    anchorLinkContent.style.cssText = "right:0;"
+                }
+                anchorLinkContent.onmouseleave = function () {
+                    anchorLinkContent.style.cssText = "right:-410px;"
+                }
+            }
+            else{
+                anchorLinkContent.style.cssText = "right:0;"
+                anchorLinkMene.onmouseenter=null;
+                anchorLinkContent.onmouseleave=null;
+            }
         }
-        anchorLinkContent.onmouseleave = function () {
-            anchorLinkContent.style.cssText = "right:-410px;"
-        }
+        resizefn();//初始化执行一次
+        window.onresize=function(){
+            resizefn();
+          }
     }
     </script>
     <html><head></head><body><section>
@@ -195,7 +208,7 @@ $("." + 'zl-ver-menu' + " li").each(function () {
     var _this = this;
 
     if (!$(this).children("ul")[0]) {
-        if (false && true) {
+        if (true && true) {
             // 当没有给定任何锚点时，打开就选中第一个
             if (i == 0 && location.hash == "") {
                 i++;
@@ -236,7 +249,7 @@ $("." + 'zl-ver-menu'  + " .tit-menu").click(function () {
         $(this).find("i").removeClass("triangle").addClass("triangle_open"); //打开
     }
 });
-if (!false) {
+if (!true) {
     $("." + 'zl-ver-menu'  + "> ul >li ul").hide();
     $(".tit-menu i").removeClass("triangle").addClass("triangle_open");
 }

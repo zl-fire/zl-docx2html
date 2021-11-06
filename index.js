@@ -90,6 +90,16 @@
                     margin: 0 auto;
                     padding: 45px;
                 }
+                @media (min-width: 1439px) {
+                    .markdown-body {
+                        float:left;
+                    }
+                }
+                @media (max-width: 1438px) {
+                    .markdown-body {
+                        float:revert;
+                    }
+                }
                 @media (max-width: 767px) {
                     .markdown-body {
                         padding: 15px;
@@ -160,7 +170,7 @@
     border-radius: 10px 0 0 10px;
     top:5px;
     right: -410px;
-    background-color: white;
+    background-color: #c5bcbc;
     height:97vh;
     /*  overflow: scroll;*/
     transition: all 1s;
@@ -192,13 +202,26 @@
         // anchorLinkContent.onclick = function () {
         //     anchorLinkContent.style.cssText = "right:-410px;";
         // };
-
-        anchorLinkMene.onmouseenter = function () {
-            anchorLinkContent.style.cssText = "right:0;"
+        function resizefn(){
+            if(document.documentElement.clientWidth<1440){
+                anchorLinkContent.style.cssText = "right:-410px;"
+                anchorLinkMene.onmouseenter = function () {
+                    anchorLinkContent.style.cssText = "right:0;"
+                }
+                anchorLinkContent.onmouseleave = function () {
+                    anchorLinkContent.style.cssText = "right:-410px;"
+                }
+            }
+            else{
+                anchorLinkContent.style.cssText = "right:0;"
+                anchorLinkMene.onmouseenter=null;
+                anchorLinkContent.onmouseleave=null;
+            }
         }
-        anchorLinkContent.onmouseleave = function () {
-            anchorLinkContent.style.cssText = "right:-410px;"
-        }
+        resizefn();//初始化执行一次
+        window.onresize=function(){
+            resizefn();
+          }
     }
     </script>
     `;
@@ -472,12 +495,12 @@
             }
             // 得到构建的菜单相关模板
             let { styleStr, templateStr, jsStr } = zl_ver_menu__default['default']({
-                show: false,
+                show: true,
                 data: menuJson,
                 callback: function (par) {
                     location.hash = $(par).attr("data-id");
                 },
-                width: "300px"
+                width: "281px"
             });
             // 将模板字符串作为内容 构建固定定位的实际菜单
             let realMenu = createEndMenuTempla(templateStr);
