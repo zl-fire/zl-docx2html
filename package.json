@@ -13,7 +13,7 @@
     "cheerio": "^1.0.0-rc.10",
     "mammoth": "^1.4.18",
     "zl-nodefs": "^1.0.9",
-    "zl-ver-menu": "^1.1.2"
+    "zl-ver-menu": "^1.1.3"
   },
   "repository": {
     "type": "git",
