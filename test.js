@@ -15,14 +15,14 @@ var { batchDocx2html, docx2html } = require("./index.js");
 
 // 批量转换
 batchDocx2html({
-    dirPath: "./testdoc",
     // dirPath: "../",
-    // outPath:"./htmldoc/aaa/bbb",
-    outPath:"./htmldoc/",
+    // outPath:"./htmldoc",
+    dirPath: "./testdoc",
+    outPath: "./htmldoc",
     showWarnMessage: false,
-    showExeResult:true,
-    isList2file:true,
-    list2filePath:"./htmldoc/tree.json"
+    showExeResult: true,
+    isList2file: true,
+    list2filePath: "./htmldoc/tree.json"
 });
 
 

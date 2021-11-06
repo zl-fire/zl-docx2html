@@ -634,14 +634,14 @@
         // 将图片信息写入过去
         if (extname === ".md") {
             // 处理assets路径问题
-            let arr = docxPath.split("/");
-            arr.pop();
-            let assetsPath1 = arr.join("/") + "/assets";
+            let assetsPath1 = path$1.join(docxPath,"../","assets");
+            let assetsPath2 = path$1.join(outPath,"../","assets");
 
-            // 处理assets路径问题
-            let arr2 = outPath.split("/");
-            arr2.pop();
-            let assetsPath2 = arr2.join("/") + "/assets";
+            // console.log("===docxPath==",docxPath)
+            // console.log("===assetsPath1==",assetsPath1)
+            // console.log("===outPath==",outPath)
+            // console.log("===assetsPath2==",assetsPath2)
+
             // 复制或剪切文件/文件夹
             copycutFiledir({
                 inputFileUrl: assetsPath1,

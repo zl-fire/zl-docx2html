@@ -1,6 +1,6 @@
 {
   "name": "zl-docx2html",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "接收要转换的页面内容字符串，自动读取页面的h1--h6标签内容与结构，生成导航锚点菜单",
   "main": "index.js",
   "scripts": {
