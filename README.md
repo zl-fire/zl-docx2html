@@ -46,6 +46,9 @@ batchDocx2html({
          showWarnMessage: false,
      })
  })()
+
+
+提示： 转换md文档时会将md文档所在目录下的assets目录整体写入到新生成的位置，所以最好md文档中为相对路径，
 ```
 
 ## 效果演示

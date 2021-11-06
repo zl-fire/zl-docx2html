@@ -17,7 +17,8 @@ var { batchDocx2html, docx2html } = require("./index.js");
 batchDocx2html({
     dirPath: "./testdoc",
     // dirPath: "../",
-    outPath:"./htmldoc",
+    // outPath:"./htmldoc/aaa/bbb",
+    outPath:"./htmldoc/",
     showWarnMessage: false,
     showExeResult:true,
     isList2file:true,

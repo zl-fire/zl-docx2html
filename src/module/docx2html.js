@@ -5,6 +5,7 @@ import Md2Html from "./Md2Html";
 let zl_nodefs = require("zl-nodefs");
 let {
     writeFile, //创建/写入文件
+    copycutFiledir,//复制剪切文件/文件夹
 } = zl_nodefs;
 
 /**
@@ -56,7 +57,7 @@ async function docx2html(parObj) {
     if (!outPath) outPath = docxPath.replace(extname, ".html");
     // 不含后缀的名字
     let fileName = basename.replace(extname, "");
-    let docxInfo,docTypeObj={};
+    let docxInfo, docTypeObj = {};
     try {
         // 说明是docx文档
         if (extname === ".docx") {
@@ -65,9 +66,9 @@ async function docx2html(parObj) {
         // 说明是markdown文档
         else if (extname === ".md") {
             let content = await new Md2Html(docxPath).md2html();
-            content=`<article class="markdown-body">${content}</article>`;
-            docxInfo={ value:content, messages:"markdown文档" };
-            docTypeObj={docType:"md"};
+            content = `<article class="markdown-body">${content}</article>`;
+            docxInfo = { value: content, messages: "markdown文档" };
+            docTypeObj = { docType: "md" };
         }
     } catch (err) {
         console.log("\n-------------------------------");
@@ -128,9 +129,31 @@ async function docx2html(parObj) {
         html = html + manualAssignment;
     }
     html = "<section>" + html + "</section>"; // The generated HTML
-    html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu, isAddOrder,...docTypeObj});
+    html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu, isAddOrder, ...docTypeObj });
 
-    writeFile({ path: outPath, content: html, showExeResult: showExeResult })
+    writeFile({ path: outPath, content: html, showExeResult: showExeResult });
+
+    // 将图片信息写入过去
+    if (extname === ".md") {
+        // 处理assets路径问题
+        let arr = docxPath.split("/");
+        arr.pop();
+        let assetsPath1 = arr.join("/") + "/assets";
+
+        // 处理assets路径问题
+        let arr2 = outPath.split("/");
+        arr2.pop();
+        let assetsPath2 = arr2.join("/") + "/assets";
+        // 复制或剪切文件/文件夹
+        copycutFiledir({
+            inputFileUrl: assetsPath1,
+            outFileUrl: assetsPath2,
+            copyOrCut: "copy",
+            // showExeResult:false,
+            rewrite: false
+        })
+    }
+
 }
 
 export default docx2html
