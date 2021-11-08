@@ -6,6 +6,7 @@
             <title>说明文档</title>
             <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
             <style>
+              /*  控制md文档显示的主体内容的位置，左右panddinf等 */
                 .markdown-body {
                     box-sizing: border-box;
                     min-width: 200px;
@@ -13,17 +14,6 @@
                     float:left;
                     margin: 0 auto;
                     padding: 25px;
-                }
-                @media (min-width: 1400px) {
-                    .markdown-body {
-                        float:left;
-                    }
-                }
-                @media (max-width: 1400px) {
-                    .markdown-body {
-                        float:revert;
-                        padding: 25px;
-                    }
                 }
                 @media (max-width: 767px) {
                     .markdown-body {
@@ -168,6 +158,9 @@
         // anchorLinkContent.onclick = function () {
         //     anchorLinkContent.style.cssText = "right:-410px;";
         // };
+
+        // 控制菜单点击后的样式
+
         function resizefn(){
             if(document.documentElement.clientWidth<1400){
                 anchorLinkContent.style.cssText = "right:-410px;"

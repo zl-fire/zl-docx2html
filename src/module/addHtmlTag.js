@@ -1,3 +1,5 @@
+
+
 /**
     * @description 如果内容没有外层的html，body包裹，则可使用此函数进行处理
     * @param {string} content 要处理的html字符串
@@ -22,25 +24,13 @@ function addHtmlTag(content, fileName, docType) {
         .docx-body {
             box-sizing: border-box;
             min-width: 200px;
-            width:80%;
+            width:90%;
             float:left;
             margin: 0 auto;
             padding: 25px;
         }
         .docx-body img {
             max-width: 100%;
-        }
-        @media (min-width: 1400px) {
-            .docx-body {
-                float:left;
-            }
-        }
-        @media (max-width: 1400px) {
-            .docx-body {
-                width:90%;
-                float:left;
-                padding: 25px;
-            }
         }
         @media (max-width: 767px) {
             .docx-body {
@@ -72,17 +62,6 @@ function addHtmlTag(content, fileName, docType) {
                     float:left;
                     margin: 0 auto;
                     padding: 25px;
-                }
-                @media (min-width: 1400px) {
-                    .markdown-body {
-                        float:left;
-                    }
-                }
-                @media (max-width: 1400px) {
-                    .markdown-body {
-                        float:revert;
-                        padding: 25px;
-                    }
                 }
                 @media (max-width: 767px) {
                     .markdown-body {

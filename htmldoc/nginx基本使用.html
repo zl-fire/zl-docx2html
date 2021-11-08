@@ -8,28 +8,17 @@
         <title>nginx基本使用</title>
         <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
         <style>
+        /*  控制docx文档显示的主体内容的位置，左右panddinf等 */
         .docx-body {
             box-sizing: border-box;
             min-width: 200px;
-            width:80%;
+            width:90%;
             float:left;
             margin: 0 auto;
             padding: 25px;
         }
         .docx-body img {
             max-width: 100%;
-        }
-        @media (min-width: 1400px) {
-            .docx-body {
-                float:left;
-            }
-        }
-        @media (max-width: 1400px) {
-            .docx-body {
-                width:90%;
-                float:left;
-                padding: 25px;
-            }
         }
         @media (max-width: 767px) {
             .docx-body {
@@ -172,6 +161,9 @@
         // anchorLinkContent.onclick = function () {
         //     anchorLinkContent.style.cssText = "right:-410px;";
         // };
+
+        // 控制菜单点击后的样式
+
         function resizefn(){
             if(document.documentElement.clientWidth<1400){
                 anchorLinkContent.style.cssText = "right:-410px;"

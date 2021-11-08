@@ -67,28 +67,17 @@
         <title>${fileName}</title>
         <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
         <style>
+        /*  控制docx文档显示的主体内容的位置，左右panddinf等 */
         .docx-body {
             box-sizing: border-box;
             min-width: 200px;
-            width:80%;
+            width:90%;
             float:left;
             margin: 0 auto;
             padding: 25px;
         }
         .docx-body img {
             max-width: 100%;
-        }
-        @media (min-width: 1400px) {
-            .docx-body {
-                float:left;
-            }
-        }
-        @media (max-width: 1400px) {
-            .docx-body {
-                width:90%;
-                float:left;
-                padding: 25px;
-            }
         }
         @media (max-width: 767px) {
             .docx-body {
@@ -112,6 +101,7 @@
             <title>${fileName}</title>
             <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
             <style>
+              /*  控制md文档显示的主体内容的位置，左右panddinf等 */
                 .markdown-body {
                     box-sizing: border-box;
                     min-width: 200px;
@@ -119,17 +109,6 @@
                     float:left;
                     margin: 0 auto;
                     padding: 25px;
-                }
-                @media (min-width: 1400px) {
-                    .markdown-body {
-                        float:left;
-                    }
-                }
-                @media (max-width: 1400px) {
-                    .markdown-body {
-                        float:revert;
-                        padding: 25px;
-                    }
                 }
                 @media (max-width: 767px) {
                     .markdown-body {
@@ -167,6 +146,10 @@
         }
         return $.html();
     }
+
+    let config = {
+        widSize: 1400, // 控制多大后自动显示菜单
+    };
 
     /**
         * @description 返回要创建固定定位的菜单容器字符串（固定格式），包含了html+css+js, 接收一个具体的菜单内容作为参数
@@ -211,6 +194,8 @@
   `;
         //先往body的最后面添加两个div，分别表示菜单按钮和菜单内容
         var anchorLinkDiv = '<div id="anchorLinkMenu">目录菜单</div><div id="anchorLinkContent">666</div>';
+        // 控制多大后自动显示菜单
+        let widSize = config.widSize;
         return anchorLinkDivStyle + `
     <script>
     createRightMenu();
@@ -233,8 +218,11 @@
         // anchorLinkContent.onclick = function () {
         //     anchorLinkContent.style.cssText = "right:-410px;";
         // };
+
+        // 控制菜单点击后的样式
+
         function resizefn(){
-            if(document.documentElement.clientWidth<1400){
+            if(document.documentElement.clientWidth<${widSize}){
                 anchorLinkContent.style.cssText = "right:-410px;"
                 anchorLinkMene.onmouseenter = function () {
                     anchorLinkContent.style.cssText = "right:0;"

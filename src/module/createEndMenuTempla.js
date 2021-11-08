@@ -1,3 +1,5 @@
+import config from "../config";
+
 /**
     * @description 返回要创建固定定位的菜单容器字符串（固定格式），包含了html+css+js, 接收一个具体的菜单内容作为参数
     * @param {string} realMenu 菜单html字符串
@@ -41,6 +43,8 @@ function createEndMenuTempla(realMenu) {
   `;
     //先往body的最后面添加两个div，分别表示菜单按钮和菜单内容
     var anchorLinkDiv = '<div id="anchorLinkMenu">目录菜单</div><div id="anchorLinkContent">666</div>';
+    // 控制多大后自动显示菜单
+    let widSize = config.widSize;
     return anchorLinkDivStyle + `
     <script>
     createRightMenu();
@@ -65,9 +69,9 @@ function createEndMenuTempla(realMenu) {
         // };
 
         // 控制菜单点击后的样式
-        
+
         function resizefn(){
-            if(document.documentElement.clientWidth<1400){
+            if(document.documentElement.clientWidth<${widSize}){
                 anchorLinkContent.style.cssText = "right:-410px;"
                 anchorLinkMene.onmouseenter = function () {
                     anchorLinkContent.style.cssText = "right:0;"
