@@ -63,6 +63,9 @@ function createEndMenuTempla(realMenu) {
         // anchorLinkContent.onclick = function () {
         //     anchorLinkContent.style.cssText = "right:-410px;";
         // };
+
+        // 控制菜单点击后的样式
+        
         function resizefn(){
             if(document.documentElement.clientWidth<1400){
                 anchorLinkContent.style.cssText = "right:-410px;"
