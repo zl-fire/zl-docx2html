@@ -64,7 +64,7 @@ function createEndMenuTempla(realMenu) {
         //     anchorLinkContent.style.cssText = "right:-410px;";
         // };
         function resizefn(){
-            if(document.documentElement.clientWidth<1440){
+            if(document.documentElement.clientWidth<1400){
                 anchorLinkContent.style.cssText = "right:-410px;"
                 anchorLinkMene.onmouseenter = function () {
                     anchorLinkContent.style.cssText = "right:0;"

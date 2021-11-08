@@ -41,12 +41,12 @@ function addHtmlTag(content, fileName, docType) {
                     margin: 0 auto;
                     padding: 45px;
                 }
-                @media (min-width: 1439px) {
+                @media (min-width: 1400px) {
                     .markdown-body {
                         float:left;
                     }
                 }
-                @media (max-width: 1438px) {
+                @media (max-width: 1400px) {
                     .markdown-body {
                         float:revert;
                     }

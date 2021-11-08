@@ -90,12 +90,12 @@
                     margin: 0 auto;
                     padding: 45px;
                 }
-                @media (min-width: 1439px) {
+                @media (min-width: 1400px) {
                     .markdown-body {
                         float:left;
                     }
                 }
-                @media (max-width: 1438px) {
+                @media (max-width: 1400px) {
                     .markdown-body {
                         float:revert;
                     }
@@ -203,7 +203,7 @@
         //     anchorLinkContent.style.cssText = "right:-410px;";
         // };
         function resizefn(){
-            if(document.documentElement.clientWidth<1440){
+            if(document.documentElement.clientWidth<1400){
                 anchorLinkContent.style.cssText = "right:-410px;"
                 anchorLinkMene.onmouseenter = function () {
                     anchorLinkContent.style.cssText = "right:0;"
