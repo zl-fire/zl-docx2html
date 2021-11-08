@@ -66,6 +66,36 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${fileName}</title>
         <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
+        <style>
+        .docx-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            width:80%;
+            float:left;
+            margin: 0 auto;
+            padding: 25px;
+        }
+        .docx-body img {
+            max-width: 100%;
+        }
+        @media (min-width: 1400px) {
+            .docx-body {
+                float:left;
+            }
+        }
+        @media (max-width: 1400px) {
+            .docx-body {
+                width:90%;
+                float:left;
+                padding: 25px;
+            }
+        }
+        @media (max-width: 767px) {
+            .docx-body {
+                padding: 15px;
+            }
+        }
+    </style>
     </head>
     <body>
         ${content}
@@ -88,7 +118,7 @@
                     width:80%;
                     float:left;
                     margin: 0 auto;
-                    padding: 45px;
+                    padding: 25px;
                 }
                 @media (min-width: 1400px) {
                     .markdown-body {
@@ -98,6 +128,7 @@
                 @media (max-width: 1400px) {
                     .markdown-body {
                         float:revert;
+                        padding: 25px;
                     }
                 }
                 @media (max-width: 767px) {
@@ -583,6 +614,7 @@
             // 说明是docx文档
             if (extname === ".docx") {
                 docxInfo = await mammoth.convertToHtml({ path: docxPath });  //通过path.join可以解决mac和window路径规则不一致的情况
+                docxInfo.value=`<article class="docx-body">${docxInfo.value}</article>`;
             }
             // 说明是markdown文档
             else if (extname === ".md") {

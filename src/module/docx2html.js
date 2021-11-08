@@ -62,6 +62,7 @@ async function docx2html(parObj) {
         // 说明是docx文档
         if (extname === ".docx") {
             docxInfo = await mammoth.convertToHtml({ path: docxPath })  //通过path.join可以解决mac和window路径规则不一致的情况
+            docxInfo.value=`<article class="docx-body">${docxInfo.value}</article>`;
         }
         // 说明是markdown文档
         else if (extname === ".md") {

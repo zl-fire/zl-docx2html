@@ -17,6 +17,36 @@ function addHtmlTag(content, fileName, docType) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${fileName}</title>
         <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
+        <style>
+        .docx-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            width:80%;
+            float:left;
+            margin: 0 auto;
+            padding: 25px;
+        }
+        .docx-body img {
+            max-width: 100%;
+        }
+        @media (min-width: 1400px) {
+            .docx-body {
+                float:left;
+            }
+        }
+        @media (max-width: 1400px) {
+            .docx-body {
+                width:90%;
+                float:left;
+                padding: 25px;
+            }
+        }
+        @media (max-width: 767px) {
+            .docx-body {
+                padding: 15px;
+            }
+        }
+    </style>
     </head>
     <body>
         ${content}
@@ -39,7 +69,7 @@ function addHtmlTag(content, fileName, docType) {
                     width:80%;
                     float:left;
                     margin: 0 auto;
-                    padding: 45px;
+                    padding: 25px;
                 }
                 @media (min-width: 1400px) {
                     .markdown-body {
@@ -49,6 +79,7 @@ function addHtmlTag(content, fileName, docType) {
                 @media (max-width: 1400px) {
                     .markdown-body {
                         float:revert;
+                        padding: 25px;
                     }
                 }
                 @media (max-width: 767px) {
