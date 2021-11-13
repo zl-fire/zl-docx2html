@@ -89,7 +89,7 @@ function createEndMenuTempla(realMenu) {
         resizefn();//初始化执行一次
         window.onresize=function(){
             resizefn();
-          }
+        }
     }
     </script>
     `;

@@ -183,7 +183,7 @@
         resizefn();//初始化执行一次
         window.onresize=function(){
             resizefn();
-          }
+        }
     }
     </script>
     <html><head></head><body><section>
@@ -277,6 +277,9 @@ if (!true) {
 }
 </script>
 
+        <script>
+           if($(".docx-body")[0])$(".docx-body").width($(".docx-body").width()-120); 
+        </script>
     </body>
     </html>
         

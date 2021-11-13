@@ -88,6 +88,9 @@
     </head>
     <body>
         ${content}
+        <script>
+           if($(".docx-body")[0])$(".docx-body").width($(".docx-body").width()-120); 
+        </script>
     </body>
     </html>
         `;
@@ -240,7 +243,7 @@
         resizefn();//初始化执行一次
         window.onresize=function(){
             resizefn();
-          }
+        }
     }
     </script>
     `;

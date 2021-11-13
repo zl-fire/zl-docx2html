@@ -41,6 +41,9 @@ function addHtmlTag(content, fileName, docType) {
     </head>
     <body>
         ${content}
+        <script>
+           if($(".docx-body")[0])$(".docx-body").width($(".docx-body").width()-120); 
+        </script>
     </body>
     </html>
         `;
