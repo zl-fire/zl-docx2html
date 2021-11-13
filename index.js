@@ -519,7 +519,8 @@
                 callback: function (par) {
                     location.hash = $(par).attr("data-id");
                 },
-                width: "281px"
+                width: "281px",
+                defaultSelect:false //默认不选择第一个菜单项
             });
             // 将模板字符串作为内容 构建固定定位的实际菜单
             let realMenu = createEndMenuTempla(templateStr);
