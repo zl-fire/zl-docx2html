@@ -16,12 +16,14 @@ import addHsOrder from "./addHsOrder";
     * @param {Boolean} other.isAddMenu   是否给转换后的html文件注入锚点菜单,默认为true
     * @param {Boolean} other.isAddOrder   是否添加手动生成的序号,默认为true
     * @param {Boolean} other.docType   原始文档类型，不传的话默认为doxc，可传如md
+    * @param {string}  other.adsContent  要添加的广告脚本,默认为空
+    * 
     * @author zl-fire 2021/09/01
     * @example
     * let html = addMenu2Page(html, fileName);
   */
 function addMenu2Page(html, fileName = "html文档", other = {}) {
-    let { isAddHtmlHead = true, isAddMenu = true, isAddOrder = true,docType } = other;
+    let { isAddHtmlHead = true, isAddMenu = true, isAddOrder = true, docType ,adsContent} = other;
     if (isAddMenu) {
         // 使用cheerio模块向页面中的所有标题注入id
         const $ = cheerio.load(html);
@@ -31,7 +33,7 @@ function addMenu2Page(html, fileName = "html文档", other = {}) {
         // 如果页面不存在任何菜单
         if (menuJson.length == 0) {
             if (isAddHtmlHead) {
-                html = addHtmlTag(html, fileName);
+                html = addHtmlTag(html, fileName, docType, adsContent);
             }
             return html;
         }
@@ -47,7 +49,7 @@ function addMenu2Page(html, fileName = "html文档", other = {}) {
                 location.hash = $(par).attr("data-id");
             },
             width: "281px",
-            defaultSelect:false //默认不选择第一个菜单项
+            defaultSelect: false //默认不选择第一个菜单项
         });
         // 将模板字符串作为内容 构建固定定位的实际菜单
         let realMenu = createEndMenuTempla(templateStr)
@@ -62,7 +64,7 @@ function addMenu2Page(html, fileName = "html文档", other = {}) {
         }
     }
     if (isAddHtmlHead) {
-        html = addHtmlTag(html, fileName,docType);
+        html = addHtmlTag(html, fileName, docType, adsContent);
     }
 
     return html;

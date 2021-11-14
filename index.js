@@ -52,10 +52,12 @@
         * @param {string} content 要处理的html字符串
         * @param {string} fileName html字符串的名字
         * @param {string} docType  原始文档类型，不传的话默认为doxc，可传如md
+        * @param {string} adsContent  要添加的广告脚本,默认为空
         * @author zl-fire 2021/09/01
         * @return {string} 包裹了html,body的最终的字符串
       */
-    function addHtmlTag(content, fileName, docType) {
+    function addHtmlTag(content, fileName, docType, adsContent = "") {
+
         if (docType !== "md") {
             return `
         <!DOCTYPE html>
@@ -65,6 +67,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${fileName}</title>
+        ${adsContent}
         <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
         <style>
         /*  控制docx文档显示的主体内容的位置，左右panddinf等 */
@@ -95,13 +98,14 @@
     </html>
         `;
         }
-        else {
+        if (docType !== "docx") {
             return `<!DOCTYPE html>
         <html>
             <head>
             <meta charset="utf-8" >
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>${fileName}</title>
+            ${adsContent}
             <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
             <style>
               /*  控制md文档显示的主体内容的位置，左右panddinf等 */
@@ -492,12 +496,14 @@
         * @param {Boolean} other.isAddMenu   是否给转换后的html文件注入锚点菜单,默认为true
         * @param {Boolean} other.isAddOrder   是否添加手动生成的序号,默认为true
         * @param {Boolean} other.docType   原始文档类型，不传的话默认为doxc，可传如md
+        * @param {string}  other.adsContent  要添加的广告脚本,默认为空
+        * 
         * @author zl-fire 2021/09/01
         * @example
         * let html = addMenu2Page(html, fileName);
       */
     function addMenu2Page(html, fileName = "html文档", other = {}) {
-        let { isAddHtmlHead = true, isAddMenu = true, isAddOrder = true,docType } = other;
+        let { isAddHtmlHead = true, isAddMenu = true, isAddOrder = true, docType ,adsContent} = other;
         if (isAddMenu) {
             // 使用cheerio模块向页面中的所有标题注入id
             const $ = cheerio__default['default'].load(html);
@@ -507,7 +513,7 @@
             // 如果页面不存在任何菜单
             if (menuJson.length == 0) {
                 if (isAddHtmlHead) {
-                    html = addHtmlTag(html, fileName);
+                    html = addHtmlTag(html, fileName, docType, adsContent);
                 }
                 return html;
             }
@@ -523,7 +529,7 @@
                     location.hash = $(par).attr("data-id");
                 },
                 width: "281px",
-                defaultSelect:false //默认不选择第一个菜单项
+                defaultSelect: false //默认不选择第一个菜单项
             });
             // 将模板字符串作为内容 构建固定定位的实际菜单
             let realMenu = createEndMenuTempla(templateStr);
@@ -538,7 +544,7 @@
             }
         }
         if (isAddHtmlHead) {
-            html = addHtmlTag(html, fileName,docType);
+            html = addHtmlTag(html, fileName, docType, adsContent);
         }
 
         return html;
@@ -566,6 +572,8 @@
         * @param {String} parObj.manualAssignment   用户手动注入的样式对象字符串：·<style>...</style>·
         * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
         * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
+        * @param {string}  parObj.adsContent  要添加的广告脚本,默认为空
+        * 
         * @author zl-fire 2021/09/01
         * @example
         * var path = require("path");
@@ -595,7 +603,8 @@
             autoHsSty = true,
             isAddOrder = true,
             isAddpagePadV = true,
-            manualAssignment
+            manualAssignment,
+            adsContent
         } = parObj;
         // 给输出路径添加默认值
         if (!outPath) outPath = docxPath.replace(extname, ".html");
@@ -606,7 +615,9 @@
             // 说明是docx文档
             if (extname === ".docx") {
                 docxInfo = await mammoth.convertToHtml({ path: docxPath });  //通过path.join可以解决mac和window路径规则不一致的情况
-                docxInfo.value=`<article class="docx-body">${docxInfo.value}</article>`;
+                docxInfo.value = `<article class="docx-body">${docxInfo.value}</article>`;
+                docTypeObj = { docType: "docx" };
+
             }
             // 说明是markdown文档
             else if (extname === ".md") {
@@ -674,15 +685,15 @@
             html = html + manualAssignment;
         }
         html = "<section>" + html + "</section>"; // The generated HTML
-        html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu, isAddOrder, ...docTypeObj });
+        html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu, isAddOrder, ...docTypeObj, adsContent });
 
         writeFile$1({ path: outPath, content: html, showExeResult: showExeResult });
 
         // 将图片信息写入过去
         if (extname === ".md") {
             // 处理assets路径问题
-            let assetsPath1 = path$1.join(docxPath,"../","assets");
-            let assetsPath2 = path$1.join(outPath,"../","assets");
+            let assetsPath1 = path$1.join(docxPath, "../", "assets");
+            let assetsPath2 = path$1.join(outPath, "../", "assets");
 
             // console.log("===docxPath==",docxPath)
             // console.log("===assetsPath1==",assetsPath1)
@@ -742,6 +753,7 @@
         * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
         * @param {Boolean} parObj.isList2file   要转换的的文件树结构是否要写入文件
         * @param {Boolean} parObj.list2filePath   要转换的的文件树结构要写入文件时的文件路径
+        * @param {string}  parObj.adsContent  要添加的广告脚本,默认为空
         * @author zl-fire 2021/09/01
         * @returns {object[]} 返回当前目录下要转换的的文件树结构
         * @example
@@ -768,7 +780,8 @@
             isAddpagePadV = true,
             isList2file = false,//默认树结构不写入文件
             list2filePath = "",//要转换的的文件树结构要写入文件时的文件路径
-            manualAssignment
+            manualAssignment,
+            adsContent
         } = parObj;
 
         //获取指定路径下的所有docx文件，不限层级
@@ -817,7 +830,8 @@
                         autoHsSty,
                         isAddOrder,
                         isAddpagePadV,
-                        manualAssignment
+                        manualAssignment,
+                        adsContent
                     });
 
                 }

@@ -22,7 +22,19 @@ batchDocx2html({
     showWarnMessage: false,
     showExeResult: true,
     isList2file: true,
-    list2filePath: "./htmldoc/tree.json"
+    list2filePath: "./htmldoc/tree.json",
+    // 注入广告
+    adsContent:`<script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?9f6231e36b2965212308e701d3167983";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    `
+
 });
 
 

@@ -22,6 +22,8 @@ let {
     * @param {String} parObj.manualAssignment   用户手动注入的样式对象字符串：·<style>...</style>·
     * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
     * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
+    * @param {string}  parObj.adsContent  要添加的广告脚本,默认为空
+    * 
     * @author zl-fire 2021/09/01
     * @example
     * var path = require("path");
@@ -51,7 +53,8 @@ async function docx2html(parObj) {
         autoHsSty = true,
         isAddOrder = true,
         isAddpagePadV = true,
-        manualAssignment
+        manualAssignment,
+        adsContent
     } = parObj;
     // 给输出路径添加默认值
     if (!outPath) outPath = docxPath.replace(extname, ".html");
@@ -62,7 +65,9 @@ async function docx2html(parObj) {
         // 说明是docx文档
         if (extname === ".docx") {
             docxInfo = await mammoth.convertToHtml({ path: docxPath })  //通过path.join可以解决mac和window路径规则不一致的情况
-            docxInfo.value=`<article class="docx-body">${docxInfo.value}</article>`;
+            docxInfo.value = `<article class="docx-body">${docxInfo.value}</article>`;
+            docTypeObj = { docType: "docx" };
+
         }
         // 说明是markdown文档
         else if (extname === ".md") {
@@ -130,15 +135,15 @@ async function docx2html(parObj) {
         html = html + manualAssignment;
     }
     html = "<section>" + html + "</section>"; // The generated HTML
-    html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu, isAddOrder, ...docTypeObj });
+    html = addMenu2Page(html, fileName, { isAddHtmlHead, isAddMenu, isAddOrder, ...docTypeObj, adsContent });
 
     writeFile({ path: outPath, content: html, showExeResult: showExeResult });
 
     // 将图片信息写入过去
     if (extname === ".md") {
         // 处理assets路径问题
-        let assetsPath1 = path.join(docxPath,"../","assets");
-        let assetsPath2 = path.join(outPath,"../","assets");
+        let assetsPath1 = path.join(docxPath, "../", "assets");
+        let assetsPath2 = path.join(outPath, "../", "assets");
 
         // console.log("===docxPath==",docxPath)
         // console.log("===assetsPath1==",assetsPath1)

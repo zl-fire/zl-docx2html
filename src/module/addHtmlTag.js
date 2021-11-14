@@ -5,10 +5,12 @@
     * @param {string} content 要处理的html字符串
     * @param {string} fileName html字符串的名字
     * @param {string} docType  原始文档类型，不传的话默认为doxc，可传如md
+    * @param {string} adsContent  要添加的广告脚本,默认为空
     * @author zl-fire 2021/09/01
     * @return {string} 包裹了html,body的最终的字符串
   */
-function addHtmlTag(content, fileName, docType) {
+function addHtmlTag(content, fileName, docType, adsContent = "") {
+
     if (docType !== "md") {
         return `
         <!DOCTYPE html>
@@ -18,6 +20,7 @@ function addHtmlTag(content, fileName, docType) {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${fileName}</title>
+        ${adsContent}
         <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
         <style>
         /*  控制docx文档显示的主体内容的位置，左右panddinf等 */
@@ -48,13 +51,14 @@ function addHtmlTag(content, fileName, docType) {
     </html>
         `;
     }
-    else {
+    if (docType !== "docx") {
         return `<!DOCTYPE html>
         <html>
             <head>
             <meta charset="utf-8" >
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>${fileName}</title>
+            ${adsContent}
             <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
             <style>
               /*  控制md文档显示的主体内容的位置，左右panddinf等 */
