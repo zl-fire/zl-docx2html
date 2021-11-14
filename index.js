@@ -552,6 +552,7 @@
 
     let mammoth = require("mammoth");
     var path$1 = require("path");
+    const zl_enc_dec = require("zl-enc-dec");
     let zl_nodefs$1 = require("zl-nodefs");
     let {
         writeFile: writeFile$1, //创建/写入文件
@@ -616,16 +617,16 @@
         try {
             // 说明是docx文档
             if (extname === ".docx") {
-
                 var options = {
                     // 将base64图片写入到本地磁盘中
                     convertImage: mammoth.images.imgElement(function (image) {
                         let type = image.contentType.split("/")[1];//图片格式类型
-                        // 图片写入路径格式：父目录/.._imgs/...文件名.png
-                        let imgName = fileName + "_" + Date.now() + '.' + type;
-                        let imgPath = path$1.join(outPath, "../", fileName + "_imgs", imgName);
                         return image.read("base64").then(function (imageBuffer) {
                             const dataBuffer = new Buffer.from(imageBuffer, 'base64'); //把base64码转成buffer对象，
+                            const hash = zl_enc_dec.md5(dataBuffer);
+                            // 图片写入路径格式：父目录/.._imgs/...文件名.png
+                            let imgName = fileName + "_" + hash + '.' + type;
+                            let imgPath = path$1.join(outPath, "../", fileName + "_imgs", imgName);
                             writeFile$1({ path: imgPath, content: dataBuffer, showExeResult: true });
                             return {
                                 src: "./" + fileName + "_imgs/" + imgName
