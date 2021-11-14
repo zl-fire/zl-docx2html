@@ -573,6 +573,7 @@
         * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
         * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
         * @param {string}  parObj.adsContent  要添加的广告脚本,默认为空
+        * @param {string}  parObj.imgTobase64  是否将docx文档中的图片转换为base64,默认false，不转换
         * 
         * @author zl-fire 2021/09/01
         * @example
@@ -604,7 +605,8 @@
             isAddOrder = true,
             isAddpagePadV = true,
             manualAssignment,
-            adsContent
+            adsContent,
+            imgTobase64 = false
         } = parObj;
         // 给输出路径添加默认值
         if (!outPath) outPath = docxPath.replace(extname, ".html");
@@ -614,7 +616,31 @@
         try {
             // 说明是docx文档
             if (extname === ".docx") {
-                docxInfo = await mammoth.convertToHtml({ path: docxPath });  //通过path.join可以解决mac和window路径规则不一致的情况
+
+                var options = {
+                    // 将base64图片写入到本地磁盘中
+                    convertImage: mammoth.images.imgElement(function (image) {
+                        let type = image.contentType.split("/")[1];//图片格式类型
+                        // 图片写入路径格式：父目录/.._imgs/...文件名.png
+                        let imgName = fileName + "_" + Date.now() + '.' + type;
+                        let imgPath = path$1.join(outPath, "../", fileName + "_imgs", imgName);
+                        return image.read("base64").then(function (imageBuffer) {
+                            const dataBuffer = new Buffer.from(imageBuffer, 'base64'); //把base64码转成buffer对象，
+                            writeFile$1({ path: imgPath, content: dataBuffer, showExeResult: true });
+                            return {
+                                src: "./" + fileName + "_imgs/" + imgName
+                            };
+                        });
+                    })
+                };
+                // 转换为base64
+                if (imgTobase64) {
+                    docxInfo = await mammoth.convertToHtml({ path: docxPath });  //通过path.join可以解决mac和window路径规则不一致的情况
+                }
+                // 将图片写入为单独的文件
+                else {
+                    docxInfo = await mammoth.convertToHtml({ path: docxPath }, options);  //通过path.join可以解决mac和window路径规则不一致的情况
+                }
                 docxInfo.value = `<article class="docx-body">${docxInfo.value}</article>`;
                 docTypeObj = { docType: "docx" };
 
