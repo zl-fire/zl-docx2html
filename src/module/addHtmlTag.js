@@ -38,6 +38,13 @@ function addHtmlTag(content, fileName, docType, adsContent = "") {
         @media (max-width: 767px) {
             .docx-body {
                 padding: 15px;
+                width: 100% !important;;
+            }
+            #anchorLinkMenu {
+                writing-mode: vertical-rl;
+                top: -5px !important;
+                right: -2px !important;
+                padding: 5px !important;
             }
         }
     </style>
@@ -73,6 +80,13 @@ function addHtmlTag(content, fileName, docType, adsContent = "") {
                 @media (max-width: 767px) {
                     .markdown-body {
                         padding: 15px;
+                        width: 100% !important;
+                    }
+                    #anchorLinkMenu {
+                        writing-mode: vertical-rl;
+                        top: -5px !important;
+                        right: -2px !important;
+                        padding: 5px !important;
                     }
                 }
             </style>
