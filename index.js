@@ -639,7 +639,7 @@
                             const dataBuffer = new Buffer.from(imageBuffer, 'base64'); //把base64码转成buffer对象，
                             const hash = zl_enc_dec.md5(dataBuffer);
                             // 图片写入路径格式：父目录/.._imgs/...文件名.png
-                            let imgName = fileName + "_" + hash + '.' + type;
+                            let imgName = hash + '.' + type;
                             let imgPath = path$1.join(outPath, "../", fileName + "_imgs", imgName);
                             writeFile$1({ path: imgPath, content: dataBuffer, showExeResult: true });
                             return {
