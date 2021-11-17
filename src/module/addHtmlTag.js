@@ -1,4 +1,6 @@
 
+import config from "../config";
+let { widSize } = config;
 
 /**
     * @description 如果内容没有外层的html，body包裹，则可使用此函数进行处理
@@ -10,6 +12,9 @@
     * @return {string} 包裹了html,body的最终的字符串
   */
 function addHtmlTag(content, fileName, docType, adsContent = "") {
+
+    // 大于1000px 完整显示菜单，内容宽度由总宽度减去菜单宽度
+    // 小于1000的，不显示菜单，宽度基本占满
 
     if (docType !== "md") {
         return `
@@ -27,7 +32,7 @@ function addHtmlTag(content, fileName, docType, adsContent = "") {
         .docx-body {
             box-sizing: border-box;
             min-width: 200px;
-            width:90%;
+            width:80%;
             float:left;
             margin: 0 auto;
             padding: 25px;
@@ -35,7 +40,7 @@ function addHtmlTag(content, fileName, docType, adsContent = "") {
         .docx-body img {
             max-width: 100%;
         }
-        @media (max-width: 767px) {
+        @media (max-width: ${widSize}px) {
             .docx-body {
                 padding: 15px;
                 width: 100% !important;;
@@ -51,9 +56,6 @@ function addHtmlTag(content, fileName, docType, adsContent = "") {
     </head>
     <body>
         ${content}
-        <script>
-           if($(".docx-body")[0])$(".docx-body").width($(".docx-body").width()-120); 
-        </script>
     </body>
     </html>
         `;
@@ -77,7 +79,7 @@ function addHtmlTag(content, fileName, docType, adsContent = "") {
                     margin: 0 auto;
                     padding: 25px;
                 }
-                @media (max-width: 767px) {
+                @media (max-width: ${widSize}px) {
                     .markdown-body {
                         padding: 15px;
                         width: 100% !important;

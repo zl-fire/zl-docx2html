@@ -47,6 +47,12 @@
     // let path=require("path");
     // await new Md2Html(docxPath).md2html();
 
+    let config = {
+        widSize: 1000, // 控制多大后自动显示菜单
+    };
+
+    let { widSize } = config;
+
     /**
         * @description 如果内容没有外层的html，body包裹，则可使用此函数进行处理
         * @param {string} content 要处理的html字符串
@@ -57,6 +63,9 @@
         * @return {string} 包裹了html,body的最终的字符串
       */
     function addHtmlTag(content, fileName, docType, adsContent = "") {
+
+        // 大于1000px 完整显示菜单，内容宽度由总宽度减去菜单宽度
+        // 小于1000的，不显示菜单，宽度基本占满
 
         if (docType !== "md") {
             return `
@@ -74,7 +83,7 @@
         .docx-body {
             box-sizing: border-box;
             min-width: 200px;
-            width:90%;
+            width:80%;
             float:left;
             margin: 0 auto;
             padding: 25px;
@@ -82,7 +91,7 @@
         .docx-body img {
             max-width: 100%;
         }
-        @media (max-width: 767px) {
+        @media (max-width: ${widSize}px) {
             .docx-body {
                 padding: 15px;
                 width: 100% !important;;
@@ -98,9 +107,6 @@
     </head>
     <body>
         ${content}
-        <script>
-           if($(".docx-body")[0])$(".docx-body").width($(".docx-body").width()-120); 
-        </script>
     </body>
     </html>
         `;
@@ -124,7 +130,7 @@
                     margin: 0 auto;
                     padding: 25px;
                 }
-                @media (max-width: 767px) {
+                @media (max-width: ${widSize}px) {
                     .markdown-body {
                         padding: 15px;
                         width: 100% !important;
@@ -167,10 +173,6 @@
         }
         return $.html();
     }
-
-    let config = {
-        widSize: 1400, // 控制多大后自动显示菜单
-    };
 
     /**
         * @description 返回要创建固定定位的菜单容器字符串（固定格式），包含了html+css+js, 接收一个具体的菜单内容作为参数
@@ -243,6 +245,11 @@
         // 控制菜单点击后的样式
 
         function resizefn(){
+
+            // 大于1000px 完整显示菜单，内容宽度由总宽度减去菜单宽度
+            // 小于1000的，不显示菜单，宽度基本占满
+
+            // 隐藏此菜单
             if(document.documentElement.clientWidth<${widSize}){
                 anchorLinkContent.style.cssText = "right:-410px;"
                 anchorLinkMene.onmouseenter = function () {
@@ -252,10 +259,14 @@
                     anchorLinkContent.style.cssText = "right:-410px;"
                 }
             }
+            // 显示此菜单
             else{
                 anchorLinkContent.style.cssText = "right:0;"
                 anchorLinkMene.onmouseenter=null;
                 anchorLinkContent.onmouseleave=null;
+                // 需要将内的宽度计算出来
+                if($(".docx-body")[0]) $(".docx-body").width(document.documentElement.clientWidth-360);
+                if($(".markdown-body")[0]) $(".markdown-body").width(document.documentElement.clientWidth-360)
             }
         }
         resizefn();//初始化执行一次

@@ -71,6 +71,11 @@ function createEndMenuTempla(realMenu) {
         // 控制菜单点击后的样式
 
         function resizefn(){
+
+            // 大于1000px 完整显示菜单，内容宽度由总宽度减去菜单宽度
+            // 小于1000的，不显示菜单，宽度基本占满
+
+            // 隐藏此菜单
             if(document.documentElement.clientWidth<${widSize}){
                 anchorLinkContent.style.cssText = "right:-410px;"
                 anchorLinkMene.onmouseenter = function () {
@@ -80,10 +85,14 @@ function createEndMenuTempla(realMenu) {
                     anchorLinkContent.style.cssText = "right:-410px;"
                 }
             }
+            // 显示此菜单
             else{
                 anchorLinkContent.style.cssText = "right:0;"
                 anchorLinkMene.onmouseenter=null;
                 anchorLinkContent.onmouseleave=null;
+                // 需要将内的宽度计算出来
+                if($(".docx-body")[0]) $(".docx-body").width(document.documentElement.clientWidth-360);
+                if($(".markdown-body")[0]) $(".markdown-body").width(document.documentElement.clientWidth-360)
             }
         }
         resizefn();//初始化执行一次
