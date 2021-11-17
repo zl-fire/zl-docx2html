@@ -273,6 +273,18 @@
         window.onresize=function(){
             resizefn();
         }
+        // 前5秒一直执行
+        let tot = 0;
+        let timer = setInterval(function () {
+          resizefn();
+          console.log("=======tot,", tot)
+          tot += 200;
+          if (tot >= 5000) {
+            clearInterval(timer);
+            tot = 0;
+          }
+        }, 200)
+      
     }
     </script>
     `;
