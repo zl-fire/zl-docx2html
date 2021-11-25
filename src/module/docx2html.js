@@ -185,7 +185,29 @@ async function docx2html(parObj) {
             // showExeResult:false,
             rewrite: false
         })
+
+        // =============================
+        {
+            // 处理assets路径问题
+            let assetsPath1 = path.join(docxPath, "../", fileName + "_imgs");
+            let assetsPath2 = path.join(outPath, "../", fileName + "_imgs");
+
+            // console.log("===docxPath==",docxPath)
+            // console.log("===assetsPath1==",assetsPath1)
+            // console.log("===outPath==",outPath)
+            // console.log("===assetsPath2==",assetsPath2)
+
+            // 复制或剪切文件/文件夹
+            copycutFiledir({
+                inputFileUrl: assetsPath1,
+                outFileUrl: assetsPath2,
+                copyOrCut: "copy",
+                // showExeResult:false,
+                rewrite: false
+            })
+        }
     }
+
 
 }
 

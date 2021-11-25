@@ -78,12 +78,18 @@ function createEndMenuTempla(realMenu) {
             // 隐藏此菜单
             if(document.documentElement.clientWidth<${widSize}){
                 anchorLinkContent.style.cssText = "right:-410px;"
+                // 鼠标移入移除时，显示和隐藏菜单
                 anchorLinkMene.onmouseenter = function () {
                     anchorLinkContent.style.cssText = "right:0;"
+                    anchorLinkContent.focus();
                 }
                 anchorLinkContent.onmouseleave = function () {
                     anchorLinkContent.style.cssText = "right:-410px;"
                 }
+                    // 点击内容时隐藏菜单
+                    $("body").on("click",".docx-body",function(){
+                        $("#anchorLinkContent").mouseleave()
+                    })
             }
             // 显示此菜单
             else{
@@ -99,18 +105,19 @@ function createEndMenuTempla(realMenu) {
         window.onresize=function(){
             resizefn();
         }
-        // 前5秒一直执行
-        let tot = 0;
-        let timer = setInterval(function () {
-          resizefn();
-        //   console.log("=======tot,", tot)
-          tot += 200;
-          if (tot >= 5000) {
-            clearInterval(timer);
-            tot = 0;
-          }
-        }, 200)
-      
+        if(document.documentElement.clientWidth<${widSize}){
+            // 前5秒一直执行
+            let tot = 0;
+            let timer = setInterval(function () {
+            //   resizefn();
+            //   console.log("=======tot,", tot)
+              tot += 200;
+              if (tot >= 5000) {
+                clearInterval(timer);
+                tot = 0;
+              }
+            }, 200)
+        }
     }
     </script>
     `;

@@ -252,12 +252,18 @@
             // 隐藏此菜单
             if(document.documentElement.clientWidth<${widSize}){
                 anchorLinkContent.style.cssText = "right:-410px;"
+                // 鼠标移入移除时，显示和隐藏菜单
                 anchorLinkMene.onmouseenter = function () {
                     anchorLinkContent.style.cssText = "right:0;"
+                    anchorLinkContent.focus();
                 }
                 anchorLinkContent.onmouseleave = function () {
                     anchorLinkContent.style.cssText = "right:-410px;"
                 }
+                    // 点击内容时隐藏菜单
+                    $("body").on("click",".docx-body",function(){
+                        $("#anchorLinkContent").mouseleave()
+                    })
             }
             // 显示此菜单
             else{
@@ -273,18 +279,19 @@
         window.onresize=function(){
             resizefn();
         }
-        // 前5秒一直执行
-        let tot = 0;
-        let timer = setInterval(function () {
-          resizefn();
-          console.log("=======tot,", tot)
-          tot += 200;
-          if (tot >= 5000) {
-            clearInterval(timer);
-            tot = 0;
-          }
-        }, 200)
-      
+        if(document.documentElement.clientWidth<${widSize}){
+            // 前5秒一直执行
+            let tot = 0;
+            let timer = setInterval(function () {
+            //   resizefn();
+            //   console.log("=======tot,", tot)
+              tot += 200;
+              if (tot >= 5000) {
+                clearInterval(timer);
+                tot = 0;
+              }
+            }, 200)
+        }
     }
     </script>
     `;
@@ -772,7 +779,29 @@
                 // showExeResult:false,
                 rewrite: false
             });
+
+            // =============================
+            {
+                // 处理assets路径问题
+                let assetsPath1 = path$1.join(docxPath, "../", fileName + "_imgs");
+                let assetsPath2 = path$1.join(outPath, "../", fileName + "_imgs");
+
+                // console.log("===docxPath==",docxPath)
+                // console.log("===assetsPath1==",assetsPath1)
+                // console.log("===outPath==",outPath)
+                // console.log("===assetsPath2==",assetsPath2)
+
+                // 复制或剪切文件/文件夹
+                copycutFiledir({
+                    inputFileUrl: assetsPath1,
+                    outFileUrl: assetsPath2,
+                    copyOrCut: "copy",
+                    // showExeResult:false,
+                    rewrite: false
+                });
+            }
         }
+
 
     }
 

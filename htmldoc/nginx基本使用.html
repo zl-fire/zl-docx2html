@@ -1,0 +1,379 @@
+
+        <!DOCTYPE html>
+    <html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>nginx基本使用</title>
+        <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?9f6231e36b2965212308e701d3167983";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+        <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
+        <style>
+        /*  控制docx文档显示的主体内容的位置，左右panddinf等 */
+        .docx-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            width:80%;
+            float:left;
+            margin: 0 auto;
+            padding: 25px;
+        }
+        .docx-body img {
+            max-width: 100%;
+        }
+        @media (max-width: 1000px) {
+            .docx-body {
+                padding: 15px;
+                width: 100% !important;;
+            }
+            #anchorLinkMenu {
+                writing-mode: vertical-rl;
+                top: -5px !important;
+                right: -2px !important;
+                padding: 5px !important;
+            }
+        }
+    </style>
+    </head>
+    <body>
+        
+    <style class="zl-ver-menu-style" >
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* 菜单收缩的三角形(默认) */
+    .triangle {
+        display: inline-block;
+        border: 5px solid transparent;
+        border-top: 5px solid #191F25;
+    }
+
+    /* 菜单展开的三角形 */
+    .triangle_open {
+        display: inline-block;
+        border: 5px solid transparent;
+        border-left: 5px solid #191F25;
+    }
+    /* 当没有后代菜单时，默认的充填位置样式 */
+    .default{
+        display: inline-block;
+        border: 5px solid transparent;
+        border-left: 5px solid #ede4e4;
+    }
+
+    /* 菜单选中时的颜色控制 */
+    .summary-active {
+        background-color: #E9F2FF !important;
+        color: #4285f4 !important;
+        border-right: 5px solid #4285F4;
+    }
+
+    .zl-ver-menu {
+       /* width: 230px; */
+        width: 281px;
+        background: #fff;
+        border: 1px solid #e7e7e9;
+        border-top-width: 0px;
+        border-bottom-width: 0px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        font-size: 16px;
+        display: inline-block;
+        height: 100%;
+        vertical-align: top;
+    }
+
+    .zl-ver-menu li {
+       /* font-size: 12px; */
+         font-size: 14px; 
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+        color: #70707a;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        cursor: pointer;
+    }
+
+    .zl-ver-menu .tit-menu {
+        padding-bottom: 10px;
+        font-size: 14px;
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+       /* color: #191f25; */
+    }
+
+    .zl-ver-menu ul {
+        padding-left: 0;
+    }
+
+    .zl-ver-menu ul,
+    .zl-ver-menu li {
+        list-style: none;
+    }
+    span.opt {
+        display: inline-block;
+        border: 1px solid #e7dcdc;
+        padding: 2px;
+        color: #7e7979;
+        padding-left:20px;
+        padding-right:20px;
+        width:90%;
+    }
+    span.opt span{
+        margin-left:2px;
+        margin-right:2px;
+        cursor: pointer;
+    }
+    span.opt span:hover {
+        color: #4285F4;
+    }
+    span.opt span:active {
+        font-weight:bold;
+    }
+    
+        span.opt {
+            text-align:right;
+        }
+        
+</style>
+    
+<style>
+#anchorLinkMenu{
+     color:blue;
+     position:fixed;
+     top:5px;
+     right: 10px;
+     padding:10px;
+     border-radius:5px;
+     box-shadow: 1px 1px 5px;
+     cursor: pointer;
+     opacity: 0.4;
+    }
+ #anchorLinkMenu:hover{
+    opacity: 1;
+}
+#anchorLinkContent {
+    opacity: 1;
+    padding: 5px;
+   /* width: 400px; */
+    position: fixed;
+    box-shadow: 1px 1px 5px;
+    border-radius: 10px 0 0 10px;
+    top:5px;
+    right: -410px;
+    background-color: #c5bcbc;
+    height:97vh;
+    /*  overflow: scroll;*/
+    transition: all 1s;
+
+}
+</style>
+  
+    <script>
+    createRightMenu();
+    function createRightMenu() {
+        //插入div和相关样式
+        document.querySelector("body").innerHTML += '<div id="anchorLinkMenu">目录菜单</div><div id="anchorLinkContent">666</div>';
+        //绑定div按钮的点击事件
+        var anchorLinkMene = document.querySelector("#anchorLinkMenu");
+        var anchorLinkContent = document.querySelector("#anchorLinkContent");
+
+        //给div菜单内容添加实际内容
+        // var realMenu = document.querySelector("#" + realMenuId);
+        // anchorLinkContent.appendChild(realMenu.cloneNode(true));
+        $(anchorLinkContent).html(`<section class='zl-ver-menu'> <span class="opt"> <span class="hide">折叠</span><span class="show">展开</span> </span>
+            <ul class='index-ver-nav'>
+            <li data-menu-id="0" data-id="h10" data-parent-id="root" style="padding-left: 20px"> <i class="default"></i> <span>1. 什么是nginx?</span> </li><li data-menu-id="1" data-id="h11" data-parent-id="root" ><div class="tit-menu" style="padding-left: 20px" ><i class="triangle"></i> <span>2. nginx常见作用？</span></div>
+            <ul class='index-ver-nav'>
+            <li data-menu-id="2" data-id="h22" data-parent-id="1" style="padding-left: 40px"> <i class="default"></i> <span>2.1. 反向代理</span> </li><li data-menu-id="3" data-id="h23" data-parent-id="1" style="padding-left: 40px"> <i class="default"></i> <span>2.2. 负载均衡</span> </li><li data-menu-id="4" data-id="h24" data-parent-id="1" style="padding-left: 40px"> <i class="default"></i> <span>2.3. 动静分离</span> </li></ul></li><li data-menu-id="5" data-id="h15" data-parent-id="root" ><div class="tit-menu" style="padding-left: 20px" ><i class="triangle"></i> <span>3. nginx的安装</span></div>
+            <ul class='index-ver-nav'>
+            <li data-menu-id="6" data-id="h26" data-parent-id="5" style="padding-left: 40px"> <i class="default"></i> <span>3.1. 下载</span> </li><li data-menu-id="7" data-id="h27" data-parent-id="5" style="padding-left: 40px"> <i class="default"></i> <span>3.2. 解压</span> </li><li data-menu-id="8" data-id="h28" data-parent-id="5" style="padding-left: 40px"> <i class="default"></i> <span>3.3. 启动</span> </li><li data-menu-id="9" data-id="h29" data-parent-id="5" style="padding-left: 40px"> <i class="default"></i> <span>3.4. 启动失败</span> </li><li data-menu-id="10" data-id="h210" data-parent-id="5" style="padding-left: 40px"> <i class="default"></i> <span>3.5. 访问</span> </li></ul></li><li data-menu-id="11" data-id="h111" data-parent-id="root" style="padding-left: 20px"> <i class="default"></i> <span>4. 一些在nginx命令</span> </li><li data-menu-id="12" data-id="h112" data-parent-id="root" style="padding-left: 20px"> <i class="default"></i> <span>5.  nginx使用之--部署生产代码</span> </li><li data-menu-id="13" data-id="h113" data-parent-id="root" style="padding-left: 20px"> <i class="default"></i> <span>6.  nginx使用之--自定义根目录</span> </li><li data-menu-id="14" data-id="h114" data-parent-id="root" ><div class="tit-menu" style="padding-left: 20px" ><i class="triangle"></i> <span>7.  nginx使用之--使用反向代理解决跨域</span></div>
+            <ul class='index-ver-nav'>
+            <li data-menu-id="15" data-id="h215" data-parent-id="14" ><div class="tit-menu" style="padding-left: 40px" ><i class="triangle"></i> <span>7.1. 后端使用cors跨域时</span></div>
+            <ul class='index-ver-nav'>
+            <li data-menu-id="16" data-id="h316" data-parent-id="15" style="padding-left: 60px"> <i class="default"></i> <span>7.1.1. 后端：实现cors跨域并写一个简单的接口</span> </li><li data-menu-id="17" data-id="h317" data-parent-id="15" style="padding-left: 60px"> <i class="default"></i> <span>7.1.2. 前端写一个页面发起fetch请求</span> </li></ul></li><li data-menu-id="18" data-id="h218" data-parent-id="14" style="padding-left: 40px"> <i class="default"></i> <span>7.2. 后端屏蔽掉cors跨域时</span> </li><li data-menu-id="19" data-id="h219" data-parent-id="14" ><div class="tit-menu" style="padding-left: 40px" ><i class="triangle"></i> <span>7.3. 开始使用nginx做反向代理跨域</span></div>
+            <ul class='index-ver-nav'>
+            <li data-menu-id="20" data-id="h320" data-parent-id="19" style="padding-left: 60px"> <i class="default"></i> <span>7.3.1. 修改nginx的配置文件</span> </li><li data-menu-id="21" data-id="h321" data-parent-id="19" style="padding-left: 60px"> <i class="default"></i> <span>7.3.2. 修改网页访问的接口地址</span> </li><li data-menu-id="22" data-id="h322" data-parent-id="19" style="padding-left: 60px"> <i class="default"></i> <span>7.3.3. 将网页移入到nginx中的html目录下</span> </li><li data-menu-id="23" data-id="h323" data-parent-id="19" style="padding-left: 60px"> <i class="default"></i> <span>7.3.4. 重新加载nginx</span> </li><li data-menu-id="24" data-id="h324" data-parent-id="19" style="padding-left: 60px"> <i class="default"></i> <span>7.3.5. 开始访问页面，获取数据</span> </li></ul></li></ul></li><li data-menu-id="25" data-id="h125" data-parent-id="root" style="padding-left: 20px"> <i class="default"></i> <span>8.  nginx开启gzip压缩</span> </li><li data-menu-id="26" data-id="h126" data-parent-id="root" style="padding-left: 20px"> <i class="default"></i> <span>9.  nginx处理404,路由，解决react/vue的history模式问题</span> </li><li data-menu-id="27" data-id="h127" data-parent-id="root" ><div class="tit-menu" style="padding-left: 20px" ><i class="triangle"></i> <span>10.  nginx代理返回406（upgrade required）解决方法</span></div>
+            <ul class='index-ver-nav'>
+            <li data-menu-id="28" data-id="h228" data-parent-id="27" style="padding-left: 40px"> <i class="default"></i> <span>10.1. DEMO</span> </li></ul></li></ul></section>`);
+    
+        // anchorLinkMene.onclick = function () {
+        //     anchorLinkContent.style.cssText = "right:0;";
+        // };
+        // //当点击了具体的内容菜单后，隐藏此菜单
+        // anchorLinkContent.onclick = function () {
+        //     anchorLinkContent.style.cssText = "right:-410px;";
+        // };
+
+        // 控制菜单点击后的样式
+
+        function resizefn(){
+
+            // 大于1000px 完整显示菜单，内容宽度由总宽度减去菜单宽度
+            // 小于1000的，不显示菜单，宽度基本占满
+
+            // 隐藏此菜单
+            if(document.documentElement.clientWidth<1000){
+                anchorLinkContent.style.cssText = "right:-410px;"
+                // 鼠标移入移除时，显示和隐藏菜单
+                anchorLinkMene.onmouseenter = function () {
+                    anchorLinkContent.style.cssText = "right:0;"
+                    anchorLinkContent.focus();
+                }
+                anchorLinkContent.onmouseleave = function () {
+                    anchorLinkContent.style.cssText = "right:-410px;"
+                }
+                    // 点击内容时隐藏菜单
+                    $("body").on("click",".docx-body",function(){
+                        $("#anchorLinkContent").mouseleave()
+                    })
+            }
+            // 显示此菜单
+            else{
+                anchorLinkContent.style.cssText = "right:0;"
+                anchorLinkMene.onmouseenter=null;
+                anchorLinkContent.onmouseleave=null;
+                // 需要将内的宽度计算出来
+                if($(".docx-body")[0]) $(".docx-body").width(document.documentElement.clientWidth-360);
+                if($(".markdown-body")[0]) $(".markdown-body").width(document.documentElement.clientWidth-360)
+            }
+        }
+        resizefn();//初始化执行一次
+        window.onresize=function(){
+            resizefn();
+        }
+        if(document.documentElement.clientWidth<1000){
+            // 前5秒一直执行
+            let tot = 0;
+            let timer = setInterval(function () {
+            //   resizefn();
+            //   console.log("=======tot,", tot)
+              tot += 200;
+              if (tot >= 5000) {
+                clearInterval(timer);
+                tot = 0;
+              }
+            }, 200)
+        }
+    }
+    </script>
+    <html><head></head><body><section>
+        <style>
+           body{
+               padding-left:20px !important;
+               padding-right:20px !important;;
+           }
+        </style>
+            
+<style>
+    h1 {
+        font-size: 32px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    h3 {
+        font-size: 18.72px;
+    }
+
+    h4 {
+        font-size: 16px;
+    }
+
+    h5 {
+        font-size: 13.28px;
+    }
+
+    h6 {
+        font-size: 12px;
+    }
+</style>
+    <article class="docx-body"><h1 id="h10">1. 什么是nginx?</h1><p>常见的服务器： iis, apach，nginx , node</p><p>Nginx是一款<a href="https://baike.baidu.com/item/%E8%BD%BB%E9%87%8F%E7%BA%A7/10002835&quot; \t &quot;https://baike.baidu.com/item/nginx/_blank">轻量级</a>的<a href="https://baike.baidu.com/item/Web/150564&quot; \t &quot;https://baike.baidu.com/item/nginx/_blank">Web</a> 服务器/<a href="https://baike.baidu.com/item/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/7793488&quot; \t &quot;https://baike.baidu.com/item/nginx/_blank">反向代理</a>服务器及<a href="https://baike.baidu.com/item/%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6/111106&quot; \t &quot;https://baike.baidu.com/item/nginx/_blank">电子邮件</a>（IMAP/POP3）代理服务器，在BSD-like 协议下发行。</p><p>其特点是占有内存少，<a href="https://baike.baidu.com/item/%E5%B9%B6%E5%8F%91/11024806&quot; \t &quot;https://baike.baidu.com/item/nginx/_blank">并发</a>能力强，事实上nginx的并发能力在同类型的网页服务器中表现较好，中国大陆使用nginx网站用户有：百度、<a href="https://baike.baidu.com/item/%E4%BA%AC%E4%B8%9C/210931&quot; \t &quot;https://baike.baidu.com/item/nginx/_blank">京东</a>、<a href="https://baike.baidu.com/item/%E6%96%B0%E6%B5%AA/125692&quot; \t &quot;https://baike.baidu.com/item/nginx/_blank">新浪</a>、<a href="https://baike.baidu.com/item/%E7%BD%91%E6%98%93/185754&quot; \t &quot;https://baike.baidu.com/item/nginx/_blank">网易</a>、<a href="https://baike.baidu.com/item/%E8%85%BE%E8%AE%AF/112204&quot; \t &quot;https://baike.baidu.com/item/nginx/_blank">腾讯</a>、<a href="https://baike.baidu.com/item/%E6%B7%98%E5%AE%9D/145661&quot; \t &quot;https://baike.baidu.com/item/nginx/_blank">淘宝</a>等。</p><h1 id="h11">2. nginx常见作用？</h1><h2 id="h22">2.1. 反向代理</h2><p>正向代理：代理的是客户端，访问者可以由此隐藏自己的身份。</p><p>反向代理：代理的是服务器，服务提供者可以隐藏真正的服务器。</p><p><img src="./nginx基本使用_imgs/de376b15f5c19dfc93b6d76d20ff6751.png"></p><h2 id="h23">2.2. 负载均衡</h2><p>负载均衡多在高并发情况下需要使用。</p><p>其原理就是将数据流量分摊到多个服务器执行，减轻每台服务器的压力，多台服务器(集群)共同完成工作任务，从而提高了数据的吞吐量。</p><h2 id="h24">2.3. 动静分离</h2><p>         Nginx提供的动静分离是指把动态请求和静态请求分离开，合适的服务器处理相应的请求，使整个服务器系统的性能、效率更高。</p><p>       Nginx可以根据配置对不同的请求做不同转发，这是动态分离的基础。静态请求对应的静态资源可以直接放在Nginx上做缓冲，更好的做法是放在相应的缓冲服务器上。动态请求由相应的后端服务器处理。</p><h1 id="h15">3. nginx的安装</h1><h2 id="h26">3.1. 下载</h2><p>下载稳定版：<a href="http://nginx.org/en/download.html">http://nginx.org/en/download.html</a></p><p><img src="./nginx基本使用_imgs/a02a474212c0da91b4652a3911dbc44d.png"></p><h2 id="h27">3.2. 解压</h2><p>下载进行解压，将解压后的文件放到自己心仪的目录下，我的解压文件放在了d盘根目录下，如下图所示：</p><p><img src="./nginx基本使用_imgs/6cb059473d37f07a2c397971a6041ff2.png"></p><h2 id="h28">3.3. 启动</h2><p>直接双击上图中的蓝色图标【nginx.exe】文件即可，双击后，cmd窗口会闪一下就消失，</p><p>这时你可以查看下任务管理器里面是否有相关进程，如果有，那就说明启动成功了</p><p><img src="./nginx基本使用_imgs/d00335ecc76486cae9c9988e692f3fe7.png"></p><h2 id="h29">3.4. 启动失败</h2><p>如果你双击后在任务管理器没有发现这两个进程，那么就说明启动失败，这时估计很有可能是端口被占用了（因为nginx的默认端口是80，然后iis等服务器的默认端口也是80），</p><p>这时，修改端口即可，打开nginx的配置文件：</p><p> D:\nginx-1.16.1\conf\nginx.conf</p><p>将端口80修改下，比如改成82</p><p><img src="./nginx基本使用_imgs/0d45604baa4d1f08bc6ad094c7ab6fd7.png"></p><h2 id="h210">3.5. 访问</h2><p>这时你直接访问： 127.0.0.1 即可（默认端口80，如果修改了就加上修改后的端口）</p><p><img src="./nginx基本使用_imgs/449fbaf544075e85a895afb7662e6d27.png"></p><h1 id="h111">4. 一些在nginx命令</h1><p><strong>nginx.exe -s stop                   //停止nginx</strong></p><p><strong>nginx.exe -s reload                //重新加载nginx</strong></p><p><strong>nginx.exe -s quit                     //退出nginx</strong></p><p>注意：如果想要这些命令生效，需要在nginx.exe所在目录下打开cmd进行执行，或者把此路径配置进入环境变量。</p><h1 id="h112">5.  nginx使用之--部署生产代码</h1><p>查看解压后的nginx目录，发现有一个html目录，这个目录就是我们项目的网页代码所在的目录，我们的生产代码就应该放入到这里面来。</p><p><img src="./nginx基本使用_imgs/0c52e720946ac336e55865eb238182a5.png"></p><p>比如我把我们课件中的一个网站代码放进去，效果如下，表示使用nginx成功的部署了我们项目代码</p><p><img src="./nginx基本使用_imgs/45f0dfc8d46f35b353d6fc25867fb40a.png"></p><p>你也可以把你的打包出来的dist代码放进去，进行部署</p><h1 id="h113">6.  nginx使用之--自定义根目录</h1><p><strong>修改配置文件内容</strong></p><p><strong>       </strong></p><p>如果你不想每次访问时都要加上一个dist或者webtest1等名字，那么你可以把D:\nginx-1.16.1\conf\nginx.conf文件中的下图的location选项的root值改掉即可</p><p>（默认根路径是html,把html改为html/webtest1就能直接访问webtest1了）</p><p><img src="./nginx基本使用_imgs/f521269dbbb11adafe1580d4511a7c97.png"></p><p><strong>修改完后记得重启下nginx服务器</strong></p><p>       命令如下： <strong>nginx.exe -s reload</strong></p><p><strong>再次访问你的网站</strong></p><p><img src="./nginx基本使用_imgs/ade1a153b74a1efe9410c63ca15f8e4e.png"></p><h1 id="h114">7.  nginx使用之--使用反向代理解决跨域</h1><h2 id="h215">7.1. 后端使用cors跨域时</h2><p>后端，先使用nginx创建一个项目</p><p><img src="./nginx基本使用_imgs/34e43f21e05b8f3fa82e6cd57851fc70.png"></p><h3 id="h316">7.1.1. 后端：实现cors跨域并写一个简单的接口</h3><p><img src="./nginx基本使用_imgs/eca614cc5f17e28275c8008ab8da471b.png"><br></p><p>//使用中间件形式实现跨域访问</p><p>app.use("*", function (req, res, next) {</p><p>    //设置允许跨域的域名，*代表允许任意域名跨域</p><p>    res.header("Access-Control-Allow-Origin", "*");</p><p>    //允许的header类型</p><p>    res.header("Access-Control-Allow-Headers", "content-type");</p><p>    //接收ajax请求手动提交的cookie信息</p><p>    res.header("Access-Control-Allow-Credentials", true);</p><p>    //跨域允许的请求方式 </p><p>    res.header("Access-Control-Allow-Methods", "DELETE,PUT,POST,GET,OPTIONS");</p><p>    if (req.method == 'OPTIONS')</p><p>      res.sendStatus(200); //让options尝试请求快速结束</p><p>    else</p><p>      next();</p><p>  });</p><p>router.get('/', function(req, res, next) {</p><p>  res.send('你好啊^_^，我是后端数据...');</p><p>});</p><h3 id="h317">7.1.2. 前端写一个页面发起fetch请求</h3><p>&lt;!DOCTYPE html&gt;</p><p>&lt;html lang="en"&gt;</p><p>&lt;head&gt;</p><p>    &lt;meta charset="UTF-8"&gt;</p><p>    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p><p>    &lt;meta http-equiv="X-UA-Compatible" content="ie=edge"&gt;</p><p>    &lt;title&gt;Document&lt;/title&gt;</p><p>&lt;/head&gt;</p><p>&lt;body&gt;</p><p>    &lt;button onclick="getData()"&gt;获取后端数据&lt;/button&gt;</p><p>    &lt;h1&gt;&lt;/h1&gt;</p><p>    &lt;script&gt;</p><p>        function getData() {</p><p>            fetch("http://127.0.0.1:3000/users")</p><p>                .then(function (d) {</p><p>                    return d.text()</p><p>                })</p><p>                .then(function (d) {</p><p>                    document.querySelector("h1").innerHTML = d</p><p>                    console.log(d)</p><p>                })</p><p>        }</p><p>    &lt;/script&gt;</p><p>&lt;/body&gt;</p><p>&lt;/html&gt;</p><p><strong>此时由于后端跨域了，所以能正常的获取数据</strong></p><p><img src="./nginx基本使用_imgs/d78d9de96402920f1acf44ab0b616784.png"></p><h2 id="h218">7.2. 后端屏蔽掉cors跨域时</h2><p>前端先清除下缓存，然后在进行访问，此时就要报错了</p><p><img src="./nginx基本使用_imgs/e0246c6491c88e3d69e6e904b5fab2c4.png"></p><h2 id="h219">7.3. 开始使用nginx做反向代理跨域</h2><h3 id="h320">7.3.1. 修改nginx的配置文件</h3><p>配置文件路径： D:\nginx-1.16.1\conf\nginx.conf</p><p>根据下图添加指定代码到相应位置去</p><p><img src="./nginx基本使用_imgs/ecb98d58ac27ce188e6e4a1680185a99.png"></p><p>        # 等价于使用 /api 代替真实地址 http://127.0.0.1:3000</p><p>        location /api {</p><p>            rewrite ^.+api/?(.*)$ /$1 break;</p><p>            include uwsgi_params;</p><p>            proxy_pass http://127.0.0.1:3000;</p><p>        }</p><h3 id="h321">7.3.2. 修改网页访问的接口地址</h3><p><img src="./nginx基本使用_imgs/15709cd123019d15394a23d0af99947c.png"></p><h3 id="h322">7.3.3. 将网页移入到nginx中的html目录下</h3><h3 id="h323">7.3.4. 重新加载nginx</h3><p>在nginx.exe目录下执行如下命令重启nginx</p><p><strong>nginx.exe -s reload   //重新加载nginx</strong></p><h3 id="h324">7.3.5. 开始访问页面，获取数据</h3><p><img src="./nginx基本使用_imgs/77fe5d2508d0c27b5a147099d9764027.png"></p><h1 id="h125">8.  nginx开启gzip压缩</h1><p>只需要在http选项中添加如下代码即可</p><p>gzip on;</p><p>gzip_buffers 32 4K;</p><p>gzip_comp_level 6;</p><p>gzip_min_length 100;</p><p>gzip_types application/javascript text/css text/xml;</p><p>gzip_disable "MSIE [1-6]\."; #配置禁用gzip条件，支持正则。此处表示ie6及以下不启用gzip（因为ie低版本不支持）</p><p>gzip_vary on;</p><p><img src="./nginx基本使用_imgs/b57aecf1b65e6328a3499e17cef51a65.png"></p><p>gzip配置说明</p><p>     1) gzip on;   开启gzip压缩</p><p>     2) gzip_min_length 1k;   设置允许压缩的页面最小字节数，1k以下可能会存在越压越大的情况</p><p>     3) gzip_buffers 4 16k;  设置系统获取几个单位的缓存用于存储gzip的压缩结果数据流</p><p>     4) gzip_http_version 1.1 ; 默认值: gzip_http_version 1.1，标识只有http协议是1.1版本的才会开启压缩，因为早期浏览器可能存在不支持自解压功能，会存在用户看到乱码的风险</p><p>     5) gzip_comp_level 3; 默认1，gzip压缩比/压缩级别，压缩级别 1-9，级别越高压缩率越大，越耗CPU，压缩时间越长</p><p>     6) gzip_types text/plain text/html application/x-javascript text/css application/xml text/javascript image/jpeg image/gif image/png image/x-icon ;  默认 text/html，可压缩文件的格式，只有指定格式的文件才会进行压缩，具体格式如下所示：</p><p>types {</p><p>    text/html                             html htm shtml;</p><p>    text/css                              css;</p><p>    text/xml                              xml;</p><p>    image/gif                             gif;</p><p>    image/jpeg                            jpeg jpg;</p><p>    application/javascript                js;</p><p>    application/atom+xml                  atom;</p><p>    application/rss+xml                   rss;</p><p>    text/mathml                           mml;</p><p>    text/plain                            txt;</p><p>    text/vnd.sun.j2me.app-descriptor      jad;</p><p>    text/vnd.wap.wml                      wml;</p><p>    text/x-component                      htc;</p><p>    image/png                             png;</p><p>    image/tiff                            tif tiff;</p><p>    image/vnd.wap.wbmp                    wbmp;</p><p>    image/x-icon                          ico;</p><p>    image/x-jng                           jng;</p><p>    image/x-ms-bmp                        bmp;</p><p>    image/svg+xml                         svg svgz;</p><p>    image/webp                            webp;</p><p>    application/font-woff                 woff;</p><p>    application/java-archive              jar war ear;</p><p>    application/json                      json;</p><p>    application/mac-binhex40              hqx;</p><p>    application/msword                    doc;</p><p>    application/pdf                       pdf;</p><p>    application/postscript                ps eps ai;</p><p>    application/rtf                       rtf;</p><p>    application/vnd.apple.mpegurl         m3u8;</p><p>    application/vnd.ms-excel              xls;</p><p>    application/vnd.ms-fontobject         eot;</p><p>    application/vnd.ms-powerpoint         ppt;</p><p>    application/vnd.wap.wmlc              wmlc;</p><p>    application/vnd.google-earth.kml+xml  kml;</p><p>    application/vnd.google-earth.kmz      kmz;</p><p>    application/x-7z-compressed           7z;</p><p>    application/x-cocoa                   cco;</p><p>    application/x-java-archive-diff       jardiff;</p><p>    application/x-java-jnlp-file          jnlp;</p><p>    application/x-makeself                run;</p><p>    application/x-perl                    pl pm;</p><p>    application/x-pilot                   prc pdb;</p><p>    application/x-rar-compressed          rar;</p><p>    application/x-redhat-package-manager  rpm;</p><p>    application/x-sea                     sea;</p><p>    application/x-shockwave-flash         swf;</p><p>    application/x-stuffit                 sit;</p><p>    application/x-tcl                     tcl tk;</p><p>    application/x-x509-ca-cert            der pem crt;</p><p>    application/x-xpinstall               xpi;</p><p>    application/xhtml+xml                 xhtml;</p><p>    application/xspf+xml                  xspf;</p><p>    application/zip                       zip;</p><p>    application/octet-stream              bin exe dll;</p><p>    application/octet-stream              deb;</p><p>    application/octet-stream              dmg;</p><p>    application/octet-stream              iso img;</p><p>    application/octet-stream              msi msp msm;</p><p>    application/vnd.openxmlformats-officedocument.wordprocessingml.document    docx;</p><p>    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet          xlsx;</p><p>    application/vnd.openxmlformats-officedocument.presentationml.presentation  pptx;</p><p>    audio/midi                            mid midi kar;</p><p>    audio/mpeg                            mp3;</p><p>    audio/ogg                             ogg;</p><p>    audio/x-m4a                           m4a;</p><p>    audio/x-realaudio                     ra;</p><p>    video/3gpp                            3gpp 3gp;</p><p>    video/mp2t                            ts;</p><p>    video/mp4                             mp4;</p><p>    video/mpeg                            mpeg mpg;</p><p>    video/quicktime                       mov;</p><p>    video/webm                            webm;</p><p>    video/x-flv                           flv;</p><p>    video/x-m4v                           m4v;</p><p>    video/x-mng                           mng;</p><p>    video/x-ms-asf                        asx asf;</p><p>    video/x-ms-wmv                        wmv;</p><p>    video/x-msvideo                       avi;</p><p>}</p><p>来源于nginx/conf/mime.types 文件</p><p>     7) gzip_vary on;  http头联合使用，加个vary头，给代理服务器用的，有的浏览器支持压缩，有的不支持，所以避免浪费不支持的也压缩，所以根据客户端的HTTP头来判断，是否需要压缩</p><p>     8) gzip_disable "MSIE [1-6]\.";   禁用IE1-6版本使用gzip压缩</p><h1 id="h126">9.  nginx处理404,路由，解决react/vue的history模式问题</h1><p><img src="./nginx基本使用_imgs/311fce309f6634c4d2cc2967c6206648.png"></p><p>error_page 404 /index.html;</p><h1 id="h127">10.  nginx代理返回406（upgrade required）解决方法</h1><p>请求返回&nbsp;426</p><p>nginx 反向代理默认走的http 1.0版本</p><p>但是 被反向代理的服务器是1.1版本的!</p><p>so 在反向代理的时候加上一句</p><p>proxy_http_version 1.1;</p><h2 id="h228">10.1. DEMO</h2><p>location /recharge {</p><p>         proxy_http_version 1.1;</p><p>         proxy_pass http://10.100.100.100:360/;</p><p>    }</p></article></section></body></html>
+<script>
+var callback=function (par) {
+                    location.hash = $(par).attr("data-id");
+                };
+//设置垂直菜单的鼠标事件
+var i = 0;
+$("." + 'zl-ver-menu' + " li").each(function () {
+    var _this = this;
+
+    if (!$(this).children("ul")[0]) {
+        if (true && false) {
+            // 当没有给定任何锚点时，打开就选中第一个
+            if (i == 0 && location.hash == "") {
+                i++;
+                setTimeout(function () {
+                    $(_this).click();
+                    $(_this).addClass("summary-active ");
+                }, 0);
+            }
+        }
+        $(this).on({
+            mouseover: function mouseover() {
+                $(this).css({ "background-color": "#E9F2FF" });
+            },
+            mouseout: function mouseout() {
+                $(this).css({ "background-color": "transparent" });
+            }
+        });
+    }
+});
+// 给菜单添加点击事件，实现选中效果
+$("." + 'zl-ver-menu'  + " li").each(function () {
+    if (!$(this).children("ul")[0]) {
+        $(this).click(function () {
+            $("." + 'zl-ver-menu'  + " li").removeClass("summary-active ");
+            $(this).addClass("summary-active ");
+            callback(this);
+        });
+    }
+});
+// 当点击了菜单标题时，展开和搜索图标
+$("." + 'zl-ver-menu'  + " .tit-menu").click(function () {
+    $(this).parent().children("ul").slideToggle();
+    var classv = $(this).find("i").attr("class");
+    //这里因为字符串triangle_open包含了字符串triangle，所有顺序要注意下
+    if (classv.includes("triangle_open")) {
+        $(this).find("i").removeClass("triangle_open").addClass("triangle"); //关闭
+    } else {
+        $(this).find("i").removeClass("triangle").addClass("triangle_open"); //打开
+    }
+});
+
+// 添加整体的折叠事件
+$("." + 'zl-ver-menu' +" span.opt .hide").click(function () {
+    $("."+'zl-ver-menu'+">ul ul").hide(500);
+    $(".tit-menu i").removeClass("triangle").addClass("triangle_open");
+});
+// 添加整体的展开事件
+$("." + 'zl-ver-menu' +" span.opt .show").click(function () {
+    $("."+'zl-ver-menu'+">ul ul").show(500);
+    $(".tit-menu i").removeClass("triangle_open").addClass("triangle");
+});
+
+// 初始化展开还是收缩
+if (!true) {
+    $("." + 'zl-ver-menu'  + "> ul >li ul").hide();
+    $(".tit-menu i").removeClass("triangle").addClass("triangle_open");
+}
+</script>
+
+    </body>
+    </html>
+        
