@@ -1,4 +1,5 @@
 import Md2Html from "./module/Md2Html";
+// var Md2Html = require("./module/Md2Html.js").Md2Html;
 import addHtmlTag from "./module/addHtmlTag";
 import addMenu2Page from "./module/addMenu2Page";
 import createEndMenuTempla from "./module/createEndMenuTempla";

@@ -42,6 +42,9 @@
             })
         }
     }
+    // module.exports={
+    //     Md2Html
+    // }
 
     // 使用示例
     // let path=require("path");
@@ -596,6 +599,7 @@
 
     let mammoth = require("mammoth");
     var path$1 = require("path");
+    // var Md2Html = require("./Md2Html.js").Md2Html;
     const zl_enc_dec = require("zl-enc-dec");
     let zl_nodefs$1 = require("zl-nodefs");
     let {
@@ -847,6 +851,8 @@
         * @param {Boolean} parObj.isList2file   要转换的的文件树结构是否要写入文件
         * @param {Boolean} parObj.list2filePath   要转换的的文件树结构要写入文件时的文件路径
         * @param {string}  parObj.adsContent  要添加的广告脚本,默认为空
+        * @param {string}  parObj.imgTobase64  是否将docx文档中的图片转换为base64,默认false，不转换
+        * 
         * @author zl-fire 2021/09/01
         * @returns {object[]} 返回当前目录下要转换的的文件树结构
         * @example
@@ -874,7 +880,8 @@
             isList2file = false,//默认树结构不写入文件
             list2filePath = "",//要转换的的文件树结构要写入文件时的文件路径
             manualAssignment,
-            adsContent
+            adsContent,
+            imgTobase64=false
         } = parObj;
 
         //获取指定路径下的所有docx文件，不限层级
@@ -924,7 +931,8 @@
                         isAddOrder,
                         isAddpagePadV,
                         manualAssignment,
-                        adsContent
+                        adsContent,
+                        imgTobase64
                     });
 
                 }

@@ -1,3 +1,4 @@
+export var __esModule: boolean;
 /**
     * @description 接收一个html字页面符串--给标题注入id-->得到tree菜单结构---》生成菜单模板--》注入到页面内容并返回
     * @param {Object} parObj 完整的参数对象信息
@@ -7,6 +8,9 @@
     * @param {Boolean} other.isAddHtmlHead  是否不给转换后的文档添加html,body等标签,默认为true
     * @param {Boolean} other.isAddMenu   是否给转换后的html文件注入锚点菜单,默认为true
     * @param {Boolean} other.isAddOrder   是否添加手动生成的序号,默认为true
+    * @param {Boolean} other.docType   原始文档类型，不传的话默认为doxc，可传如md
+    * @param {string}  other.adsContent  要添加的广告脚本,默认为空
+    *
     * @author zl-fire 2021/09/01
     * @example
     * let html = addMenu2Page(html, fileName);
@@ -15,6 +19,8 @@ export function addMenu2Page(html: any, fileName?: string, other?: {
     isAddHtmlHead: boolean;
     isAddMenu: boolean;
     isAddOrder: boolean;
+    docType: boolean;
+    adsContent: string;
 }): any;
 /**
     * @description 传入一个目录路径，将此路径下的所有docx文件批量转换为html文件（不管层级有多深）
@@ -31,6 +37,9 @@ export function addMenu2Page(html: any, fileName?: string, other?: {
     * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
     * @param {Boolean} parObj.isList2file   要转换的的文件树结构是否要写入文件
     * @param {Boolean} parObj.list2filePath   要转换的的文件树结构要写入文件时的文件路径
+    * @param {string}  parObj.adsContent  要添加的广告脚本,默认为空
+    * @param {string}  parObj.imgTobase64  是否将docx文档中的图片转换为base64,默认false，不转换
+    *
     * @author zl-fire 2021/09/01
     * @returns {object[]} 返回当前目录下要转换的的文件树结构
     * @example
@@ -56,6 +65,8 @@ export function batchDocx2html(parObj: {
     showExeResult: boolean;
     isList2file: boolean;
     list2filePath: boolean;
+    adsContent: string;
+    imgTobase64: string;
 }): object[];
 /**
     * @function  传入docx类型文档，会解析成html，同时给这个html注入菜单，最后写入指定的路径
@@ -71,6 +82,9 @@ export function batchDocx2html(parObj: {
     * @param {String} parObj.manualAssignment   用户手动注入的样式对象字符串：·<style>...</style>·
     * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
     * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
+    * @param {string}  parObj.adsContent  要添加的广告脚本,默认为空
+    * @param {string}  parObj.imgTobase64  是否将docx文档中的图片转换为base64,默认false，不转换
+    *
     * @author zl-fire 2021/09/01
     * @example
     * var path = require("path");
@@ -97,8 +111,11 @@ export function docx2html(parObj: {
     manualAssignment: string;
     showWarnMessage: boolean;
     showExeResult: boolean;
+    adsContent: string;
+    imgTobase64: string;
 }): Promise<void>;
 export namespace utils {
+    export { Md2Html };
     export { addHtmlTag };
     export { createEndMenuTempla };
     export { numberToChinese };
@@ -106,15 +123,16 @@ export namespace utils {
     export { numToEng0_26 };
     export { resolveHtmlPageMenu };
 }
-export var __esModule: boolean;
 /**
     * @description 如果内容没有外层的html，body包裹，则可使用此函数进行处理
     * @param {string} content 要处理的html字符串
     * @param {string} fileName html字符串的名字
+    * @param {string} docType  原始文档类型，不传的话默认为doxc，可传如md
+    * @param {string} adsContent  要添加的广告脚本,默认为空
     * @author zl-fire 2021/09/01
     * @return {string} 包裹了html,body的最终的字符串
   */
-declare function addHtmlTag(content: string, fileName: string): string;
+declare function addHtmlTag(content: string, fileName: string, docType: string, adsContent?: string): string;
 /**
     * @description 返回要创建固定定位的菜单容器字符串（固定格式），包含了html+css+js, 接收一个具体的菜单内容作为参数
     * @param {string} realMenu 菜单html字符串

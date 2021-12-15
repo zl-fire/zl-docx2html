@@ -105,6 +105,8 @@ export function addMenu2Page(html: any, fileName?: string, other?: {
     * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
     * @param {Boolean} parObj.isList2file   要转换的的文件树结构是否要写入文件
     * @param {Boolean} parObj.list2filePath   要转换的的文件树结构要写入文件时的文件路径
+    * @param {string}  parObj.imgTobase64  是否将docx文档中的图片转换为base64,默认false，不转换
+    * 
     * @author zl-fire 2021/09/01
     * @example
     *
@@ -129,6 +131,7 @@ export function batchDocx2html(parObj: {
     showExeResult: boolean;
     isList2file: boolean;
     list2filePath: boolean;
+    imgTobase64: string;
 }): Promise<void>;
 
 -------------------------------docx2html----------------------------------------------
@@ -147,6 +150,7 @@ export function batchDocx2html(parObj: {
     * @param {String} parObj.manualAssignment   用户手动注入的样式对象字符串：·<style>...</style>·
     * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
     * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
+    * @param {string}  parObj.imgTobase64  是否将docx文档中的图片转换为base64,默认false，不转换
     * @author zl-fire 2021/09/01
     * @example
     * var path = require("path");
@@ -173,6 +177,7 @@ export function docx2html(parObj: {
     manualAssignment: boolean;
     showWarnMessage: boolean;
     showExeResult: boolean;
+    imgTobase64: string;
 }): Promise<void>;
 export namespace utils {
     export { addHtmlTag };

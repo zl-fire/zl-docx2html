@@ -32,6 +32,9 @@ class Md2Html {
     }
 }
 export default Md2Html;
+// module.exports={
+//     Md2Html
+// }
 
 // 使用示例
 // let path=require("path");

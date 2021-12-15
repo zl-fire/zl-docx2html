@@ -1,13 +1,12 @@
 {
   "name": "zl-docx2html",
-  "version": "1.1.22",
+  "version": "1.1.23",
   "description": "接收要转换的页面内容字符串，自动读取页面的h1--h6标签内容与结构，生成导航锚点菜单",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "pak": "rollup src/main.js --file index.js --format umd --name 'zl-docx2html'",
-    "tsc": "tsc -d --allowJS index.js",
-    "getDTS": "tsc -d --allowJS src/main.js"
+    "tsc": "tsc -d --allowJS index.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
