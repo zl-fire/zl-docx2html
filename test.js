@@ -22,7 +22,7 @@ batchDocx2html({
     showWarnMessage: false,
     showExeResult: true,
     isList2file: true,
-    // imgTobase64:true,
+    imgTobase64:true,
     list2filePath: "./htmldoc/tree.json",
     // 注入广告
     adsContent:`<script>

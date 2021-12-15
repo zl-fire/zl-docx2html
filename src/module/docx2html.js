@@ -1,6 +1,5 @@
 let mammoth = require("mammoth");
 var path = require("path");
-// var Md2Html = require("./Md2Html.js").Md2Html;
 const zl_enc_dec = require("zl-enc-dec");
 import addMenu2Page from "./addMenu2Page";
 import Md2Html from "./Md2Html";
@@ -99,7 +98,7 @@ async function docx2html(parObj) {
         }
         // 说明是markdown文档
         else if (extname === ".md") {
-            let content = await new Md2Html(docxPath).md2html();
+            let content = await new Md2Html().md2html(docxPath);
             content = `<article class="markdown-body">${content}</article>`;
             docxInfo = { value: content, messages: "markdown文档" };
             docTypeObj = { docType: "md" };

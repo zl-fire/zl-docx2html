@@ -9,42 +9,33 @@
     var cheerio__default = /*#__PURE__*/_interopDefaultLegacy(cheerio);
     var zl_ver_menu__default = /*#__PURE__*/_interopDefaultLegacy(zl_ver_menu);
 
+    let fs = require('fs'); //文件模块
+    let marked = require('marked').marked; //md转html模块
+
     /**
-     * markdown文件转html页面
-     * @constructor
+     * @function Md2Html
+     * @description markdown文件转html页面
      */
     class Md2Html {
-        constructor(fileName) {
-            this.fs = require('fs'); //文件模块
-            this.path = require('path'); //路径模块
-            this.marked = require('marked').marked; //md转html模块
-            this.fileName = fileName || 'unnamed';
-        }
-
-        /**
-        * 将marked转换为html
-        */
-        md2html() {
-           return new Promise((resolve,reject)=>{
-                this.fs.readFile(this.fileName, 'utf-8', (err, data) => { //读取文件
+        md2html(fileName) {
+            fileName = fileName || 'unnamed';
+            return new Promise((resolve, reject) => {
+                fs.readFile(fileName, 'utf-8', (err, data) => { //读取文件
                     if (err) {
                         throw err;
                     }
                     // 同步使用 highlight.js 转换代码
-                    this.marked.setOptions({
+                    marked.setOptions({
                         highlight: function (code) {
                             return require('highlight.js').highlightAuto(code).value
                         }
                     });
-                    const content = this.marked(data); //将md内容转为html内容
+                    const content = marked(data); //将md内容转为html内容
                     resolve(content);
                 });
             })
         }
     }
-    // module.exports={
-    //     Md2Html
-    // }
 
     // 使用示例
     // let path=require("path");
@@ -599,7 +590,6 @@
 
     let mammoth = require("mammoth");
     var path$1 = require("path");
-    // var Md2Html = require("./Md2Html.js").Md2Html;
     const zl_enc_dec = require("zl-enc-dec");
     let zl_nodefs$1 = require("zl-nodefs");
     let {
@@ -696,7 +686,7 @@
             }
             // 说明是markdown文档
             else if (extname === ".md") {
-                let content = await new Md2Html(docxPath).md2html();
+                let content = await new Md2Html().md2html(docxPath);
                 content = `<article class="markdown-body">${content}</article>`;
                 docxInfo = { value: content, messages: "markdown文档" };
                 docTypeObj = { docType: "md" };
