@@ -24,7 +24,7 @@ let {
     * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
     * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
     * @param {string}  parObj.adsContent  要添加的广告脚本,默认为空
-    * @param {string}  parObj.imgTobase64  是否将docx文档中的图片转换为base64,默认false，不转换
+    * @param {Boolean}  parObj.imgTobase64  是否将docx文档中的图片转换为base64,默认false，不转换
     * 
     * @author zl-fire 2021/09/01
     * @example

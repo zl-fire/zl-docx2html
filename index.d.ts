@@ -38,7 +38,7 @@ export function addMenu2Page(html: any, fileName?: string, other?: {
     * @param {Boolean} parObj.isList2file   要转换的的文件树结构是否要写入文件
     * @param {Boolean} parObj.list2filePath   要转换的的文件树结构要写入文件时的文件路径
     * @param {string}  parObj.adsContent  要添加的广告脚本,默认为空
-    * @param {string}  parObj.imgTobase64  是否将docx文档中的图片转换为base64,默认false，不转换
+    * @param {Boolean}  parObj.imgTobase64  是否将docx文档中的图片转换为base64,默认false，不转换
     *
     * @author zl-fire 2021/09/01
     * @returns {object[]} 返回当前目录下要转换的的文件树结构
@@ -83,7 +83,7 @@ export function batchDocx2html(parObj: {
     * @param {Boolean} parObj.showWarnMessage   是否显示docx文档转换为html时的警告信息（如果有的话），默认显示
     * @param {Boolean} parObj.showExeResult   创建html文件时，是否要显示提示信息
     * @param {string}  parObj.adsContent  要添加的广告脚本,默认为空
-    * @param {string}  parObj.imgTobase64  是否将docx文档中的图片转换为base64,默认false，不转换
+    * @param {Boolean}  parObj.imgTobase64  是否将docx文档中的图片转换为base64,默认false，不转换
     *
     * @author zl-fire 2021/09/01
     * @example
