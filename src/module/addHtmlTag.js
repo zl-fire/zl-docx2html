@@ -25,8 +25,8 @@ function addHtmlTag(content, fileName, docType, adsContent = "") {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${fileName}</title>
-        ${adsContent}
         <script src="https://gcore.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
+        ${adsContent}
         <style>
         /*  控制docx文档显示的主体内容的位置，左右panddinf等 */
         .docx-body {
@@ -67,8 +67,8 @@ function addHtmlTag(content, fileName, docType, adsContent = "") {
             <meta charset="utf-8" >
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>${fileName}</title>
-            ${adsContent}
             <script src="https://gcore.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
+            ${adsContent}
             <style>
               /*  控制md文档显示的主体内容的位置，左右panddinf等 */
                 .markdown-body {
