@@ -58,7 +58,7 @@ function addMenu2Page(html, fileName = "html文档", other = {}) {
         // 如果要添加菜单 但是 不加头信息
         if (isAddMenu && !isAddHtmlHead) {
             html = `<body> 
-            <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
+            <script src="https://gcore.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
              ${html}  
            </body>"; `// The generated HTML
         }

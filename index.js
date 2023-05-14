@@ -1,13 +1,8 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('cheerio'), require('zl-ver-menu')) :
     typeof define === 'function' && define.amd ? define(['exports', 'cheerio', 'zl-ver-menu'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global['zl-docx2html'] = {}, global.cheerio, global.zl_ver_menu));
-}(this, (function (exports, cheerio, zl_ver_menu) { 'use strict';
-
-    function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-    var cheerio__default = /*#__PURE__*/_interopDefaultLegacy(cheerio);
-    var zl_ver_menu__default = /*#__PURE__*/_interopDefaultLegacy(zl_ver_menu);
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global["zl-docx2html"] = {}, global.cheerio, global.zl_ver_menu));
+})(this, (function (exports, cheerio, zl_ver_menu) { 'use strict';
 
     let fs = require('fs'); //文件模块
     let marked = require('marked').marked; //md转html模块
@@ -71,7 +66,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${fileName}</title>
         ${adsContent}
-        <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
+        <script src="https://gcore.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
         <style>
         /*  控制docx文档显示的主体内容的位置，左右panddinf等 */
         .docx-body {
@@ -113,7 +108,7 @@
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>${fileName}</title>
             ${adsContent}
-            <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
+            <script src="https://gcore.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
             <style>
               /*  控制md文档显示的主体内容的位置，左右panddinf等 */
                 .markdown-body {
@@ -544,7 +539,7 @@
         let { isAddHtmlHead = true, isAddMenu = true, isAddOrder = true, docType ,adsContent} = other;
         if (isAddMenu) {
             // 使用cheerio模块向页面中的所有标题注入id
-            const $ = cheerio__default['default'].load(html);
+            const $ = cheerio.load(html);
             html = addHsId($);
             // 得到菜单json对象
             let menuJson = resolveHtmlPageMenu($);
@@ -560,7 +555,7 @@
                 html = addHsOrder($, menuJson);
             }
             // 得到构建的菜单相关模板
-            let { styleStr, templateStr, jsStr } = zl_ver_menu__default['default']({
+            let { styleStr, templateStr, jsStr } = zl_ver_menu({
                 show: true,
                 data: menuJson,
                 callback: function (par) {
@@ -576,7 +571,7 @@
             // 如果要添加菜单 但是 不加头信息
             if (isAddMenu && !isAddHtmlHead) {
                 html = `<body> 
-            <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
+            <script src="https://gcore.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
              ${html}  
            </body>"; `;// The generated HTML
             }
@@ -947,6 +942,4 @@
     exports.docx2html = docx2html;
     exports.utils = utils;
 
-    Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
+}));
