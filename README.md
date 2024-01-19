@@ -61,7 +61,7 @@ batchDocx2html({
 
    ~~https://www.blogzl.com~~
 
-由于没钱交域名费用了，所以这里直接访问服务器IP地址看示例吧😪下面是我以前写的一个word文档，现在转换为网页的效果
+由于没钱交域名费用了，所以这里直接访问服务器IP地址看示例吧😪下面是我以前写的一个文档，现在转换为网页的效果
 
 https://132.232.23.187/pub/7-nodejs/Nodejs%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B/3.%20Express%E5%AE%9E%E8%B7%B5.html
 
